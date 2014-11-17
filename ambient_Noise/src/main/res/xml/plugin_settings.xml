@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="status_plugin_ambient_noise"
+        android:persistent="true"
+        android:summary="Detects silent from noisy surroundings."
+        android:title="Active" />
+
+    <EditTextPreference
+        android:defaultValue="5"
+        android:key="frequency_plugin_ambient_noise"
+        android:persistent="true"
+        android:summary="5 seconds"
+        android:title="How frequently to sample audio (in seconds)"
+        android:inputType="numberDecimal" />
+    <EditTextPreference android:title="Time window" android:key="time_window_plugin_ambient_noise" android:persistent="true" android:defaultValue="5"/>
+
+</PreferenceScreen>
