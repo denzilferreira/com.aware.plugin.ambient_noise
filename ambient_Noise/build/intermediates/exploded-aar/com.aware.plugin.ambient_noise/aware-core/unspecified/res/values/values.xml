@@ -26,7 +26,7 @@
     </string-array>
     <!-- From: file:/Users/denzil/Dropbox/Programming/aware-client/aware-core/src/main/res/values/bools.xml -->
     <eat-comment/>
-    <item format="boolean" name="display_aware" type="bool">false</item>
+    <item format="boolean" name="display_aware" type="bool">true</item>
     <!-- From: file:/Users/denzil/Dropbox/Programming/aware-client/aware-core/src/main/res/values/color.xml -->
     <eat-comment/>
     <color name="card_shadow">#AFAFAF</color>

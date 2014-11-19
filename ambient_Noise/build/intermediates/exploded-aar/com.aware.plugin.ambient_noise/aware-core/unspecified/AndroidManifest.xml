@@ -2,12 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.aware"
-    android:versionCode="343"
+    android:versionCode="344"
     android:versionName="3.0" >
 
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="21" />
+
+    <!-- FOR PLUGINS/APPS COMMENT STARTS HERE -->
+
 
     <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
     <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
@@ -26,27 +29,34 @@
     <!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
     <!-- <uses-permission android:name="android.permission.READ_CALL_LOG" /> -->
     <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
+
+
+    <!-- &lt;!&ndash; For reading QRCodes &ndash;&gt; -->
     <!-- <uses-feature android:name="android.hardware.camera" /> -->
     <!-- <uses-feature android:name="android.hardware.camera.autofocus" /> -->
 
 
-    <!-- Compatibility for Android Wear -->
-    <uses-feature android:name="android.hardware.type.watch" />
+    <!-- &lt;!&ndash; Compatibility for Android Wear &ndash;&gt; -->
+    <!-- <uses-feature android:name="android.hardware.type.watch" /> -->
 
-    <permission
-        android:name="com.aware.READ_CONTEXT_DATA"
-        android:description="@string/read_permission"
-        android:icon="@drawable/ic_launcher_settings"
-        android:label="Read AWARE&apos;s Context data"
-        android:protectionLevel="normal" >
-    </permission>
-    <permission
-        android:name="com.aware.WRITE_CONTEXT_DATA"
-        android:description="@string/write_permission"
-        android:icon="@drawable/ic_launcher_settings"
-        android:label="Write to AWARE&apos;s Context data"
-        android:protectionLevel="normal" >
-    </permission>
+
+    <!-- <permission -->
+    <!-- android:name="com.aware.READ_CONTEXT_DATA" -->
+    <!-- android:description="@string/read_permission" -->
+    <!-- android:icon="@drawable/ic_launcher_settings" -->
+    <!-- android:label="Read AWARE&apos;s Context data" -->
+    <!-- android:protectionLevel="normal" > -->
+    <!-- </permission> -->
+    <!-- <permission -->
+    <!-- android:name="com.aware.WRITE_CONTEXT_DATA" -->
+    <!-- android:description="@string/write_permission" -->
+    <!-- android:icon="@drawable/ic_launcher_settings" -->
+    <!-- android:label="Write to AWARE&apos;s Context data" -->
+    <!-- android:protectionLevel="normal" > -->
+    <!-- </permission> -->
+
+
+    <!-- FOR PLUGINS/APPS COMMENT ENDS HERE, BUT CONTINUES AGAIN BELOW -->
 
     <uses-permission android:name="com.aware.READ_CONTEXT_DATA" />
     <uses-permission android:name="com.aware.WRITE_CONTEXT_DATA" />
@@ -333,14 +343,14 @@
         <!-- AWARE ContentProviders -->
 
 
+        <!-- FOR PLUGINS/APPS COMMENT STARTS HERE -->
         <!-- <provider -->
         <!-- android:name="com.aware.providers.Bluetooth_Provider" -->
         <!-- android:authorities="${applicationId}.provider.bluetooth" -->
         <!-- android:exported="true" -->
         <!-- android:enabled="@bool/display_aware" -->
         <!-- android:readPermission="com.aware.READ_CONTEXT_DATA" -->
-        <!-- android:writePermission="com.aware.WRITE_CONTEXT_DATA" -->
-        <!-- > -->
+        <!-- android:writePermission="com.aware.WRITE_CONTEXT_DATA"> -->
         <!-- </provider> -->
         <!-- <provider -->
         <!-- android:name="com.aware.providers.Applications_Provider" -->
@@ -576,6 +586,9 @@
         <!-- android:writePermission="com.aware.WRITE_CONTEXT_DATA" -->
         <!-- > -->
         <!-- </provider> -->
+
+
+        <!-- FOR PLUGINS/APPS COMMENT STOPS HERE -->
 
     </application>
 
