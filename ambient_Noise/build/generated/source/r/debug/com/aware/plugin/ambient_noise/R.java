@@ -267,17 +267,6 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
         public static final int buttonBarStyle=0x7f01009d;
-        /** <p>Must be one or more (separated by '|') of the following constant values.</p>
-<table>
-<colgroup align="left" />
-<colgroup align="left" />
-<colgroup align="left" />
-<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
-<tr><td><code>top</code></td><td>0x30</td><td></td></tr>
-<tr><td><code>bottom</code></td><td>0x50</td><td></td></tr>
-</table>
-         */
-        public static final int buttonGravity=0x7f0100cd;
         /** <p>Must be one of the following constant values.</p>
 <table>
 <colgroup align="left" />
@@ -443,10 +432,18 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
         public static final int closeItemLayout=0x7f01001c;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int collapseContentDescription=0x7f0100ce;
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
-        public static final int collapseIcon=0x7f0100ce;
+        public static final int collapseIcon=0x7f0100cd;
         /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
 "<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
 <p>This may also be a reference to a resource (in the form
@@ -1872,58 +1869,60 @@ containing a value of this type.
         public static final int abc_textfield_search_activated_mtrl_alpha=0x7f020030;
         public static final int abc_textfield_search_default_mtrl_alpha=0x7f020031;
         public static final int abc_textfield_search_material=0x7f020032;
-        public static final int common_full_open_on_phone=0x7f020033;
-        public static final int common_ic_googleplayservices=0x7f020034;
-        public static final int common_signin_btn_icon_dark=0x7f020035;
-        public static final int common_signin_btn_icon_disabled_dark=0x7f020036;
-        public static final int common_signin_btn_icon_disabled_focus_dark=0x7f020037;
-        public static final int common_signin_btn_icon_disabled_focus_light=0x7f020038;
-        public static final int common_signin_btn_icon_disabled_light=0x7f020039;
-        public static final int common_signin_btn_icon_focus_dark=0x7f02003a;
-        public static final int common_signin_btn_icon_focus_light=0x7f02003b;
-        public static final int common_signin_btn_icon_light=0x7f02003c;
-        public static final int common_signin_btn_icon_normal_dark=0x7f02003d;
-        public static final int common_signin_btn_icon_normal_light=0x7f02003e;
-        public static final int common_signin_btn_icon_pressed_dark=0x7f02003f;
-        public static final int common_signin_btn_icon_pressed_light=0x7f020040;
-        public static final int common_signin_btn_text_dark=0x7f020041;
-        public static final int common_signin_btn_text_disabled_dark=0x7f020042;
-        public static final int common_signin_btn_text_disabled_focus_dark=0x7f020043;
-        public static final int common_signin_btn_text_disabled_focus_light=0x7f020044;
-        public static final int common_signin_btn_text_disabled_light=0x7f020045;
-        public static final int common_signin_btn_text_focus_dark=0x7f020046;
-        public static final int common_signin_btn_text_focus_light=0x7f020047;
-        public static final int common_signin_btn_text_light=0x7f020048;
-        public static final int common_signin_btn_text_normal_dark=0x7f020049;
-        public static final int common_signin_btn_text_normal_light=0x7f02004a;
-        public static final int common_signin_btn_text_pressed_dark=0x7f02004b;
-        public static final int common_signin_btn_text_pressed_light=0x7f02004c;
-        public static final int ic_action_ambient_noise=0x7f02004d;
-        public static final int ic_action_aware_plugins=0x7f02004e;
-        public static final int ic_action_aware_sensors=0x7f02004f;
-        public static final int ic_action_aware_stream=0x7f020050;
-        public static final int ic_action_aware_studies=0x7f020051;
-        public static final int ic_action_download=0x7f020052;
-        public static final int ic_action_nav_placeholder=0x7f020053;
-        public static final int ic_action_qrcode=0x7f020054;
-        public static final int ic_action_settings=0x7f020055;
-        public static final int ic_action_update=0x7f020056;
-        public static final int ic_card_android_wear=0x7f020057;
-        public static final int ic_drawer=0x7f020058;
-        public static final int ic_launcher=0x7f020059;
-        public static final int ic_launcher_settings=0x7f02005a;
-        public static final int ic_pkg_active=0x7f02005b;
-        public static final int ic_pkg_download=0x7f02005c;
-        public static final int ic_pkg_updated=0x7f02005d;
-        public static final int ic_plusone_medium_off_client=0x7f02005e;
-        public static final int ic_plusone_small_off_client=0x7f02005f;
-        public static final int ic_plusone_standard_off_client=0x7f020060;
-        public static final int ic_plusone_tall_off_client=0x7f020061;
-        public static final int ic_stat_aware_esm=0x7f020062;
-        public static final int ic_stat_aware_plugin_dependency=0x7f020063;
-        public static final int ic_stat_aware_update=0x7f020064;
-        public static final int powered_by_google_dark=0x7f020065;
-        public static final int powered_by_google_light=0x7f020066;
+        public static final int circle=0x7f020033;
+        public static final int common_full_open_on_phone=0x7f020034;
+        public static final int common_ic_googleplayservices=0x7f020035;
+        public static final int common_signin_btn_icon_dark=0x7f020036;
+        public static final int common_signin_btn_icon_disabled_dark=0x7f020037;
+        public static final int common_signin_btn_icon_disabled_focus_dark=0x7f020038;
+        public static final int common_signin_btn_icon_disabled_focus_light=0x7f020039;
+        public static final int common_signin_btn_icon_disabled_light=0x7f02003a;
+        public static final int common_signin_btn_icon_focus_dark=0x7f02003b;
+        public static final int common_signin_btn_icon_focus_light=0x7f02003c;
+        public static final int common_signin_btn_icon_light=0x7f02003d;
+        public static final int common_signin_btn_icon_normal_dark=0x7f02003e;
+        public static final int common_signin_btn_icon_normal_light=0x7f02003f;
+        public static final int common_signin_btn_icon_pressed_dark=0x7f020040;
+        public static final int common_signin_btn_icon_pressed_light=0x7f020041;
+        public static final int common_signin_btn_text_dark=0x7f020042;
+        public static final int common_signin_btn_text_disabled_dark=0x7f020043;
+        public static final int common_signin_btn_text_disabled_focus_dark=0x7f020044;
+        public static final int common_signin_btn_text_disabled_focus_light=0x7f020045;
+        public static final int common_signin_btn_text_disabled_light=0x7f020046;
+        public static final int common_signin_btn_text_focus_dark=0x7f020047;
+        public static final int common_signin_btn_text_focus_light=0x7f020048;
+        public static final int common_signin_btn_text_light=0x7f020049;
+        public static final int common_signin_btn_text_normal_dark=0x7f02004a;
+        public static final int common_signin_btn_text_normal_light=0x7f02004b;
+        public static final int common_signin_btn_text_pressed_dark=0x7f02004c;
+        public static final int common_signin_btn_text_pressed_light=0x7f02004d;
+        public static final int ic_action_add_plugin=0x7f02004e;
+        public static final int ic_action_ambient_noise=0x7f02004f;
+        public static final int ic_action_aware_plugins=0x7f020050;
+        public static final int ic_action_aware_sensors=0x7f020051;
+        public static final int ic_action_aware_stream=0x7f020052;
+        public static final int ic_action_aware_studies=0x7f020053;
+        public static final int ic_action_download=0x7f020054;
+        public static final int ic_action_nav_placeholder=0x7f020055;
+        public static final int ic_action_qrcode=0x7f020056;
+        public static final int ic_action_settings=0x7f020057;
+        public static final int ic_action_update=0x7f020058;
+        public static final int ic_card_android_wear=0x7f020059;
+        public static final int ic_drawer=0x7f02005a;
+        public static final int ic_launcher=0x7f02005b;
+        public static final int ic_launcher_settings=0x7f02005c;
+        public static final int ic_pkg_active=0x7f02005d;
+        public static final int ic_pkg_download=0x7f02005e;
+        public static final int ic_pkg_updated=0x7f02005f;
+        public static final int ic_plusone_medium_off_client=0x7f020060;
+        public static final int ic_plusone_small_off_client=0x7f020061;
+        public static final int ic_plusone_standard_off_client=0x7f020062;
+        public static final int ic_plusone_tall_off_client=0x7f020063;
+        public static final int ic_stat_aware_esm=0x7f020064;
+        public static final int ic_stat_aware_plugin_dependency=0x7f020065;
+        public static final int ic_stat_aware_update=0x7f020066;
+        public static final int powered_by_google_dark=0x7f020067;
+        public static final int powered_by_google_light=0x7f020068;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f0a007d;
@@ -1949,7 +1948,7 @@ containing a value of this type.
         public static final int ambient_noise_icon=0x7f0a0062;
         public static final int ambient_plot=0x7f0a0068;
         public static final int aware_navigation=0x7f0a006f;
-        public static final int aware_qrcode=0x7f0a0097;
+        public static final int aware_qrcode=0x7f0a0098;
         public static final int aware_ui_main=0x7f0a006c;
         public static final int beginning=0x7f0a001c;
         public static final int book_now=0x7f0a0033;
@@ -1961,6 +1960,7 @@ containing a value of this type.
         public static final int center=0x7f0a0016;
         public static final int center_horizontal=0x7f0a0014;
         public static final int center_vertical=0x7f0a0012;
+        public static final int change_stream=0x7f0a0094;
         public static final int checkbox=0x7f0a004b;
         public static final int checkbox_container=0x7f0a0077;
         public static final int classic=0x7f0a0034;
@@ -2062,9 +2062,9 @@ containing a value of this type.
         public static final int stream_container=0x7f0a0093;
         public static final int stream_main=0x7f0a0092;
         public static final int strict_sandbox=0x7f0a002d;
-        public static final int study_description=0x7f0a0095;
-        public static final int study_name=0x7f0a0094;
-        public static final int study_pi=0x7f0a0096;
+        public static final int study_description=0x7f0a0096;
+        public static final int study_name=0x7f0a0095;
+        public static final int study_pi=0x7f0a0097;
         public static final int submit_area=0x7f0a005e;
         public static final int tabMode=0x7f0a0002;
         public static final int terrain=0x7f0a001f;
@@ -2129,7 +2129,8 @@ containing a value of this type.
     }
     public static final class raw {
         public static final int aware=0x7f060000;
-        public static final int awareframework=0x7f060001;
+        public static final int aware_wear=0x7f060001;
+        public static final int awareframework=0x7f060002;
     }
     public static final class string {
         public static final int abc_action_bar_home_description=0x7f0d0000;
@@ -2147,62 +2148,63 @@ containing a value of this type.
         public static final int abc_searchview_description_voice=0x7f0d000c;
         public static final int abc_shareactionprovider_share_with=0x7f0d000d;
         public static final int abc_shareactionprovider_share_with_application=0x7f0d000e;
-        public static final int accept=0x7f0d000f;
-        public static final int app_name=0x7f0d0010;
-        public static final int aware_activate_accessibility=0x7f0d0011;
-        public static final int aware_auto_update=0x7f0d0012;
-        public static final int aware_auto_update_version=0x7f0d0013;
-        public static final int aware_camera_scan=0x7f0d0014;
-        public static final int aware_debug_summary=0x7f0d0015;
-        public static final int aware_debug_tag=0x7f0d0016;
-        public static final int aware_debug_tag_summary=0x7f0d0017;
-        public static final int aware_debug_title=0x7f0d0018;
-        public static final int aware_description=0x7f0d0019;
-        public static final int aware_developer=0x7f0d001a;
-        public static final int aware_device_id=0x7f0d001b;
-        public static final int aware_esm_questions=0x7f0d001c;
-        public static final int aware_plugins=0x7f0d001d;
-        public static final int aware_sensors=0x7f0d001e;
-        public static final int aware_stream=0x7f0d001f;
-        public static final int aware_studies=0x7f0d0020;
-        public static final int common_android_wear_notification_needs_update_text=0x7f0d0021;
-        public static final int common_android_wear_update_text=0x7f0d0022;
-        public static final int common_android_wear_update_title=0x7f0d0023;
-        public static final int common_google_play_services_enable_button=0x7f0d0024;
-        public static final int common_google_play_services_enable_text=0x7f0d0025;
-        public static final int common_google_play_services_enable_title=0x7f0d0026;
-        public static final int common_google_play_services_error_notification_requested_by_msg=0x7f0d0027;
-        public static final int common_google_play_services_install_button=0x7f0d0028;
-        public static final int common_google_play_services_install_text_phone=0x7f0d0029;
-        public static final int common_google_play_services_install_text_tablet=0x7f0d002a;
-        public static final int common_google_play_services_install_title=0x7f0d002b;
-        public static final int common_google_play_services_invalid_account_text=0x7f0d002c;
-        public static final int common_google_play_services_invalid_account_title=0x7f0d002d;
-        public static final int common_google_play_services_needs_enabling_title=0x7f0d002e;
-        public static final int common_google_play_services_network_error_text=0x7f0d002f;
-        public static final int common_google_play_services_network_error_title=0x7f0d0030;
-        public static final int common_google_play_services_notification_needs_installation_title=0x7f0d0031;
-        public static final int common_google_play_services_notification_needs_update_title=0x7f0d0032;
-        public static final int common_google_play_services_notification_ticker=0x7f0d0033;
-        public static final int common_google_play_services_unknown_issue=0x7f0d0034;
-        public static final int common_google_play_services_unsupported_text=0x7f0d0035;
-        public static final int common_google_play_services_unsupported_title=0x7f0d0036;
-        public static final int common_google_play_services_update_button=0x7f0d0037;
-        public static final int common_google_play_services_update_text=0x7f0d0038;
-        public static final int common_google_play_services_update_title=0x7f0d0039;
-        public static final int common_open_on_phone=0x7f0d003a;
-        public static final int common_signin_button_text=0x7f0d003b;
-        public static final int common_signin_button_text_long=0x7f0d003c;
-        public static final int create_calendar_message=0x7f0d003d;
-        public static final int create_calendar_title=0x7f0d003e;
-        public static final int decline=0x7f0d003f;
-        public static final int drawer_close=0x7f0d0040;
-        public static final int drawer_open=0x7f0d0041;
-        public static final int read_permission=0x7f0d0042;
-        public static final int store_picture_message=0x7f0d0043;
-        public static final int store_picture_title=0x7f0d0044;
-        public static final int wallet_buy_button_place_holder=0x7f0d0045;
-        public static final int write_permission=0x7f0d0046;
+        public static final int abc_toolbar_collapse_description=0x7f0d000f;
+        public static final int accept=0x7f0d0010;
+        public static final int app_name=0x7f0d0011;
+        public static final int aware_activate_accessibility=0x7f0d0012;
+        public static final int aware_auto_update=0x7f0d0013;
+        public static final int aware_auto_update_version=0x7f0d0014;
+        public static final int aware_camera_scan=0x7f0d0015;
+        public static final int aware_debug_summary=0x7f0d0016;
+        public static final int aware_debug_tag=0x7f0d0017;
+        public static final int aware_debug_tag_summary=0x7f0d0018;
+        public static final int aware_debug_title=0x7f0d0019;
+        public static final int aware_description=0x7f0d001a;
+        public static final int aware_developer=0x7f0d001b;
+        public static final int aware_device_id=0x7f0d001c;
+        public static final int aware_esm_questions=0x7f0d001d;
+        public static final int aware_plugins=0x7f0d001e;
+        public static final int aware_sensors=0x7f0d001f;
+        public static final int aware_stream=0x7f0d0020;
+        public static final int aware_studies=0x7f0d0021;
+        public static final int common_android_wear_notification_needs_update_text=0x7f0d0022;
+        public static final int common_android_wear_update_text=0x7f0d0023;
+        public static final int common_android_wear_update_title=0x7f0d0024;
+        public static final int common_google_play_services_enable_button=0x7f0d0025;
+        public static final int common_google_play_services_enable_text=0x7f0d0026;
+        public static final int common_google_play_services_enable_title=0x7f0d0027;
+        public static final int common_google_play_services_error_notification_requested_by_msg=0x7f0d0028;
+        public static final int common_google_play_services_install_button=0x7f0d0029;
+        public static final int common_google_play_services_install_text_phone=0x7f0d002a;
+        public static final int common_google_play_services_install_text_tablet=0x7f0d002b;
+        public static final int common_google_play_services_install_title=0x7f0d002c;
+        public static final int common_google_play_services_invalid_account_text=0x7f0d002d;
+        public static final int common_google_play_services_invalid_account_title=0x7f0d002e;
+        public static final int common_google_play_services_needs_enabling_title=0x7f0d002f;
+        public static final int common_google_play_services_network_error_text=0x7f0d0030;
+        public static final int common_google_play_services_network_error_title=0x7f0d0031;
+        public static final int common_google_play_services_notification_needs_installation_title=0x7f0d0032;
+        public static final int common_google_play_services_notification_needs_update_title=0x7f0d0033;
+        public static final int common_google_play_services_notification_ticker=0x7f0d0034;
+        public static final int common_google_play_services_unknown_issue=0x7f0d0035;
+        public static final int common_google_play_services_unsupported_text=0x7f0d0036;
+        public static final int common_google_play_services_unsupported_title=0x7f0d0037;
+        public static final int common_google_play_services_update_button=0x7f0d0038;
+        public static final int common_google_play_services_update_text=0x7f0d0039;
+        public static final int common_google_play_services_update_title=0x7f0d003a;
+        public static final int common_open_on_phone=0x7f0d003b;
+        public static final int common_signin_button_text=0x7f0d003c;
+        public static final int common_signin_button_text_long=0x7f0d003d;
+        public static final int create_calendar_message=0x7f0d003e;
+        public static final int create_calendar_title=0x7f0d003f;
+        public static final int decline=0x7f0d0040;
+        public static final int drawer_close=0x7f0d0041;
+        public static final int drawer_open=0x7f0d0042;
+        public static final int read_permission=0x7f0d0043;
+        public static final int store_picture_message=0x7f0d0044;
+        public static final int store_picture_title=0x7f0d0045;
+        public static final int wallet_buy_button_place_holder=0x7f0d0046;
+        public static final int write_permission=0x7f0d0047;
     }
     public static final class style {
         /** 
@@ -2465,6 +2467,7 @@ containing a value of this type.
         public static final int aware_accessibility_config=0x7f050000;
         public static final int aware_preferences=0x7f050001;
         public static final int plugin_settings=0x7f050002;
+        public static final int wearable_app_desc=0x7f050003;
     }
     public static final class styleable {
         /** Attributes that can be used with a ActionBar.
@@ -6302,7 +6305,7 @@ containing a value of this type.
            <tr><th>Attribute</th><th>Description</th></tr>
            <tr><td><code>{@link #Toolbar_android_gravity android:gravity}</code></td><td></td></tr>
            <tr><td><code>{@link #Toolbar_android_minHeight android:minHeight}</code></td><td></td></tr>
-           <tr><td><code>{@link #Toolbar_buttonGravity com.aware.plugin.ambient_noise:buttonGravity}</code></td><td></td></tr>
+           <tr><td><code>{@link #Toolbar_collapseContentDescription com.aware.plugin.ambient_noise:collapseContentDescription}</code></td><td></td></tr>
            <tr><td><code>{@link #Toolbar_collapseIcon com.aware.plugin.ambient_noise:collapseIcon}</code></td><td></td></tr>
            <tr><td><code>{@link #Toolbar_contentInsetEnd com.aware.plugin.ambient_noise:contentInsetEnd}</code></td><td></td></tr>
            <tr><td><code>{@link #Toolbar_contentInsetLeft com.aware.plugin.ambient_noise:contentInsetLeft}</code></td><td></td></tr>
@@ -6325,7 +6328,7 @@ containing a value of this type.
            </table>
            @see #Toolbar_android_gravity
            @see #Toolbar_android_minHeight
-           @see #Toolbar_buttonGravity
+           @see #Toolbar_collapseContentDescription
            @see #Toolbar_collapseIcon
            @see #Toolbar_contentInsetEnd
            @see #Toolbar_contentInsetLeft
@@ -6367,22 +6370,19 @@ containing a value of this type.
         */
         public static final int Toolbar_android_minHeight = 1;
         /**
-          <p>This symbol is the offset where the {@link com.aware.plugin.ambient_noise.R.attr#buttonGravity}
+          <p>This symbol is the offset where the {@link com.aware.plugin.ambient_noise.R.attr#collapseContentDescription}
           attribute's value can be found in the {@link #Toolbar} array.
 
 
-          <p>Must be one or more (separated by '|') of the following constant values.</p>
-<table>
-<colgroup align="left" />
-<colgroup align="left" />
-<colgroup align="left" />
-<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
-<tr><td><code>top</code></td><td>0x30</td><td></td></tr>
-<tr><td><code>bottom</code></td><td>0x50</td><td></td></tr>
-</table>
-          @attr name com.aware.plugin.ambient_noise:buttonGravity
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.aware.plugin.ambient_noise:collapseContentDescription
         */
-        public static final int Toolbar_buttonGravity = 18;
+        public static final int Toolbar_collapseContentDescription = 19;
         /**
           <p>This symbol is the offset where the {@link com.aware.plugin.ambient_noise.R.attr#collapseIcon}
           attribute's value can be found in the {@link #Toolbar} array.
@@ -6392,7 +6392,7 @@ containing a value of this type.
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
           @attr name com.aware.plugin.ambient_noise:collapseIcon
         */
-        public static final int Toolbar_collapseIcon = 19;
+        public static final int Toolbar_collapseIcon = 18;
         /**
           <p>This symbol is the offset where the {@link com.aware.plugin.ambient_noise.R.attr#contentInsetEnd}
           attribute's value can be found in the {@link #Toolbar} array.

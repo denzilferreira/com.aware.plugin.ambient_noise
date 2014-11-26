@@ -26,52 +26,52 @@ public class AudioAnalysis {
 	 * Get sample Root-mean-squares value. Used to detect silence.
 	 * @return
 	 */
-	public double getRMS() {
-		double[] sqr_samples = new double[buffer_size];
-		for(int i=0; i<audio_data.length; i++) {
-			sqr_samples[i] = audio_data[i] * audio_data[i];
-		}
-		
-		double sum_sqr=0;
-		for(int i=0; i<sqr_samples.length; i++) {
-			sum_sqr+=sqr_samples[i];
-		}
-		
-		//Calculate RMS from provided sample
-		double current_rms = Math.sqrt(sum_sqr/sqr_samples.length);
-		adaptiveThreshold(current_rms);
-		return current_rms;
-	}
+    public double getRMS() {
+        if( audio_data.length == 0) return 0;
+
+        double sum = 0d;
+        for(int i=0; i<audio_data.length; i++ ) {
+            sum += audio_data[i];
+        }
+
+        double average = sum/audio_data.length;
+
+        double sumMeanSquare = 0d;
+        for(int i=0; i< audio_data[i]; i++) {
+            sumMeanSquare += Math.pow(audio_data[i]-average, 2d);
+        }
+        double averageMeanSquare = sumMeanSquare/audio_data.length;
+        return Math.sqrt(averageMeanSquare);
+    }
 	
-	private void adaptiveThreshold(double current_rms) {
+	private void adaptiveThreshold() {
 		String[] projection = {
-			"AVG(" + AmbientNoise_Data.RMS + ") as avg_rms",
-			"strftime('%d/%m/%Y'," + AmbientNoise_Data.TIMESTAMP + "/1000,'unixepoch') as sample_day"
+			"MIN(" + AmbientNoise_Data.RMS + ") as minimum_rms",
+			"strftime('%d/%m/%Y'," + AmbientNoise_Data.TIMESTAMP + "/1000,'unixepoch', 'localtime') as sample_day"
 		};
 		
-		Cursor days_average = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, projection, AmbientNoise_Data.RMS + " > 0 ) GROUP BY ( sample_day ", null, null);
-		if( days_average != null ) {
-			double minimums[] = new double[days_average.getCount()];
-			if( days_average.moveToFirst() ) {
+		Cursor daily_minimum = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, projection, AmbientNoise_Data.RMS + " > 0 ) GROUP BY ( sample_day ", null, "timestamp ASC");
+		if( daily_minimum != null ) {
+			double minimums[] = new double[daily_minimum.getCount()];
+			if( daily_minimum.moveToFirst() ) {
 				do{
-					minimums[days_average.getPosition()] = days_average.getDouble(0);
-				} while( days_average.moveToNext() );
+					minimums[daily_minimum.getPosition()] = daily_minimum.getDouble(0);
+				} while( daily_minimum.moveToNext() );
 				
-				double daily_average = 0;
+				double sum = 0;
 				for( double min_day : minimums ) {
-					daily_average+=min_day;
+					sum+=min_day;
 				}
-				daily_average = (daily_average/minimums.length) + (.25*daily_average);
-				
-				Aware.setSetting(context, Settings.THRESHOLD_SILENCE_PLUGIN_AMBIENT_NOISE, String.format("%.0f", daily_average));
-				
-				days_average.close();
+				double daily_average = sum/minimums.length;
+				Aware.setSetting(context, Settings.THRESHOLD_SILENCE_PLUGIN_AMBIENT_NOISE, String.format("%.1f", daily_average+(.25*daily_average)) );
 			}
 		}
+        if( daily_minimum!= null && ! daily_minimum.isClosed()) daily_minimum.close();
 	}
 	
 	//RMS to check if we are in silence
 	public boolean isSilent(double rms) {
+        adaptiveThreshold();
 		double threshold = Double.valueOf(Aware.getSetting(context, Settings.THRESHOLD_SILENCE_PLUGIN_AMBIENT_NOISE));
 		return (rms <= threshold);
 	}
