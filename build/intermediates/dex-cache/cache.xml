@@ -1,83 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<pre-dex-items>
+<items version="2" >
 
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/classes-51d52c58f48dbc10f5481362bc3675f45a710bae.jar"
-        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.2/classes.jar"
+        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.github.machinarius/preferencefragment/0.1.1/classes.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="d1bf02de1c56d942e7a9d093b8610ba1ef4128e3"/>
+        revision="21.1.2"
+        sha1="648463e00c6883d01b6c11a6781776203334b6fc">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/classes-085ec45c0d194ac846bfb8cd506e594396e80060.jar" />
+    </item>
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/mqtt-client-0.4.0-ea26b811352087b06a85ff5b55fb54d2a09c73cf.jar"
-        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.aware.plugin.ambient_noise/aware-core/unspecified/libs/mqtt-client-0.4.0.jar"
+        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.aware.plugin.ambient_noise/aware-core/unspecified/phoneRelease/libs/zbar.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="02315d1759d01e52495e040e6e538aaa2e91c7f6"/>
+        revision="21.1.2"
+        sha1="0a7b88ba1496a0b4af76069ad40dacd3897149e0">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/zbar-68bda995cf3f77c9d9ab0dafa587936b80eb4cde.jar" />
+    </item>
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/internal_impl-21.0.2-eafd8585fe49653ddae3cb605c591a01193b4f48.jar"
-        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.2/libs/internal_impl-21.0.2.jar"
+        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.android.support/cardview-v7/21.0.2/classes.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="962e8b12569c56dbdcf8367eb4eac8bb129cd18f"/>
+        revision="21.1.2"
+        sha1="b017100da14f9c158c9f5f2f508333c224b24a7c">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/classes-b3a749d6db26453fb76516750e24dd8fd903dfc9.jar" />
+    </item>
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/zbar-d1f19bd5596010173fdfba1300424b8b9cc53bde.jar"
-        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.aware.plugin.ambient_noise/aware-core/unspecified/libs/zbar.jar"
+        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="0a7b88ba1496a0b4af76069ad40dacd3897149e0"/>
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/classes-446344f27ab11893632f7640f51e5a2752134f96.jar" />
+    </item>
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/classes-99044a06280cca0a5cf4ee8e8660d09bed00838e.jar"
-        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.aware.plugin.ambient_noise/aware-core/unspecified/classes.jar"
+        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.aware.plugin.ambient_noise/aware-core/unspecified/phoneRelease/libs/mqtt-client-0.4.0.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="565e1a76da0a04850ed70ce9b986424455472fe1"/>
+        revision="21.1.2"
+        sha1="02315d1759d01e52495e040e6e538aaa2e91c7f6">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/mqtt-client-0.4.0-c7cd4228ef09ba2992d835bafa57690d1c02088e.jar" />
+    </item>
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/classes-beff24e452ab146966f36b29b54367997b0d2018.jar"
-        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.android.support/gridlayout-v7/21.0.0/classes.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="6c6b497aa9e3aadbaabf975379e7914fa9e65523"/>
-    <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/jtransforms-2.4-a065de28e16cb207de27090bb44264b40de10286.jar"
         jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/libs/jtransforms-2.4.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="9e52124b670340d47844a734e36765c3bc11b7f3"/>
+        revision="21.1.2"
+        sha1="9e52124b670340d47844a734e36765c3bc11b7f3">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/jtransforms-2.4-a065de28e16cb207de27090bb44264b40de10286.jar" />
+    </item>
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/classes-12ca0fe371dfba6f9553c836128b485e77436de2.jar"
-        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.android.support/cardview-v7/21.0.0/classes.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="7d2525cba8ed61fff102977caed964fc22061e34"/>
-    <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/achartengine-1.1.0-284a12ec42d4b2f2b6c2b08a61035fc6e233de04.jar"
         jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.aware.plugin.ambient_noise/aChartAndroidlib/unspecified/libs/achartengine-1.1.0.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="9932e3fb9fbe54e80873e77f72a99f79e33b3250"/>
+        revision="21.1.2"
+        sha1="9932e3fb9fbe54e80873e77f72a99f79e33b3250">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/achartengine-1.1.0-284a12ec42d4b2f2b6c2b08a61035fc6e233de04.jar" />
+    </item>
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/classes-bb71bb813ae3dd4996b65a21c92fb0376367190a.jar"
-        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.2/classes.jar"
+        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.android.support/gridlayout-v7/21.0.2/classes.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="7ae2d38807a43b2f2185ff4089a92c790b579e54"/>
+        revision="21.1.2"
+        sha1="9742ced04aafd9ac97dd2c66c1aa0e32d2ae7e54">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/classes-f24268ee14e9cd6a3832cd592a28eaf6b3df9ed1.jar" />
+    </item>
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/classes-f01e1095790c797dbac131823e5f0e5eb91dff76.jar"
-        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.1.71/classes.jar"
+        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.5.87/classes.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="0f6d5c1ef2e982c3b7858408e3df389cf5d202da"/>
+        revision="21.1.2"
+        sha1="dd9247ea0fabe8ee479638c4b4a23e93752be256">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/classes-2337e36a90321c3d658cdf74485e96fdb69fa1d5.jar" />
+    </item>
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/support-annotations-21.0.2-2e9dcbe148a4b08eb37371c2d0f3707403d512e4.jar"
-        jar="/Users/denzil/sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.2/support-annotations-21.0.2.jar"
+        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.aware.plugin.ambient_noise/aware-core/unspecified/phoneRelease/classes.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="99373741f99a0556ee293c41e8faa1ca3ae8a4e6"/>
+        revision="21.1.2"
+        sha1="c1dc08c16829f6795ffd71428f386c23f8f44cf8">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/classes-de85531a6fb6996b7a9c38739b61aeac1cd8b6e2.jar" />
+    </item>
     <item
-        dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/debug/classes-f4baeaa0120683bbe688e7eb76bab9bc6756cda3.jar"
         jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.aware.plugin.ambient_noise/aChartAndroidlib/unspecified/classes.jar"
         jumboMode="false"
-        revision="20.0.0"
-        sha1="ad51803e54765a350fc14c2579d46c64e9f2d6f0"/>
+        revision="21.1.2"
+        sha1="40878ffd0146c976fce3deb4f31c955e0dcda0bc">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/classes-f4baeaa0120683bbe688e7eb76bab9bc6756cda3.jar" />
+    </item>
+    <item
+        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/classes-b4e201516fbf05e3c42ef5e78997be93feb5f38f.jar" />
+    </item>
+    <item
+        jar="/Users/denzil/sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/support-annotations-21.0.3-eced5058900290c6cb90f2f621f63fbcbf0a5309.jar" />
+    </item>
+    <item
+        jar="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="/Users/denzil/Dropbox/Programming/com.aware.plugin.ambient_noise/ambient_Noise/build/intermediates/pre-dexed/release/internal_impl-21.0.3-7d5e3b80842b1d8e3d90da856c7cb1ae3ae4a786.jar" />
+    </item>
 
-</pre-dex-items>
+</items>
