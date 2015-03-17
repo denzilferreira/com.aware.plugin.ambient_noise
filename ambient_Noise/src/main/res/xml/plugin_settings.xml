@@ -15,6 +15,12 @@
         android:summary="5 seconds"
         android:title="How frequently to sample audio (in seconds)"
         android:inputType="numberDecimal" />
-    <EditTextPreference android:title="Time window" android:key="time_window_plugin_ambient_noise" android:persistent="true" android:defaultValue="5"/>
+
+    <EditTextPreference
+        android:title="Time window"
+        android:summary="Plot the last X minutes"
+        android:key="time_window_plugin_ambient_noise"
+        android:persistent="true"
+        android:defaultValue="5"/>
 
 </PreferenceScreen>

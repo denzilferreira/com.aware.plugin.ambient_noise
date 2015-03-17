@@ -11,10 +11,10 @@ import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 public class AudioAnalysis {
 	
-	private static Context context;
-	private static double[] magnitudes;
-	private static short[] audio_data;
-	private static int buffer_size;
+	private Context context;
+	private double[] magnitudes;
+	private short[] audio_data;
+	private int buffer_size;
 	
 	public AudioAnalysis(Context c, short[] audio, int buffer) {
 		context = c;
@@ -81,6 +81,8 @@ public class AudioAnalysis {
 	 * @return
 	 */
 	public double getFrequency() {
+        if( audio_data.length == 0 ) return 0;
+
 		//Create an FFT buffer
 		double[] fft_buffer = new double[ buffer_size * 2 ];
 		for( int i = 0; i< audio_data.length; i++ ) {
@@ -110,14 +112,16 @@ public class AudioAnalysis {
 				max_index = i;
 			}
 		}
-		return max_index*8000/buffer_size;
+		return 2*(max_index*8000/buffer_size);
 	}
 	
 	/**
 	 * Relative ambient noise in dB
 	 */
 	public double getdB() {
-		double amplitude = -1;
+		if( audio_data.length == 0 ) return 0;
+
+        double amplitude = -1;
 		for( int i=0; i<audio_data.length; i++ ) {
 			if( amplitude < audio_data[i] ) {
 				amplitude = audio_data[i];

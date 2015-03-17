@@ -10,6 +10,8 @@
 
         <service android:name="com.aware.plugin.ambient_noise.Plugin" android:exported="true"/>
         <activity android:name="com.aware.plugin.ambient_noise.Settings" android:exported="true" android:configChanges="keyboardHidden|orientation|screenSize" />
+        <service android:name="com.aware.plugin.ambient_noise.Plugin$AudioAnalyser" android:exported="true"/>
+
         <provider android:name="com.aware.plugin.ambient_noise.Provider"
             android:authorities="com.aware.plugin.ambient_noise.provider.ambient_noise" android:writePermission="com.aware.WRITE_CONTEXT_DATA" android:exported="true" android:readPermission="com.aware.READ_CONTEXT_DATA" />
     </application>

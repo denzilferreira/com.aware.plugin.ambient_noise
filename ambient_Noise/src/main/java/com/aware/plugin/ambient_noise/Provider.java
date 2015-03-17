@@ -20,7 +20,7 @@ import com.aware.utils.DatabaseHelper;
 
 public class Provider extends ContentProvider {
 	
-	public static final int DATABASE_VERSION = 1;
+	public static final int DATABASE_VERSION = 2;
 	
 	/**
 	 * Provider authority: com.aware.plugin.ambient_noise.provider.ambient_noise
@@ -62,7 +62,7 @@ public class Provider extends ContentProvider {
 		public static final String DECIBELS = "double_decibels";
 		public static final String RMS = "double_rms";
 		public static final String IS_SILENT = "is_silent";
-		public static final String SILENCE_THRESHOLD = "silence_threshold";
+		public static final String SILENCE_THRESHOLD = "double_silence_threshold";
 	}
 	
 	private static UriMatcher URIMatcher;

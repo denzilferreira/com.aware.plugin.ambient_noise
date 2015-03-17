@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,21 +23,63 @@ import android.widget.TextView;
 
 import com.aware.Aware;
 import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
+import com.aware.ui.Stream_UI;
 import com.aware.utils.IContextCard;
 
 public class ContextCard implements IContextCard {
-	
-	private static TextView frequency, decibels, ambient_noise, rms, rms_threshold;
-	private static LinearLayout ambient_plot;
+
+    private int refresh_interval = 50; //50ms
+
+    private Handler uiRefresher = new Handler(Looper.getMainLooper());
+    private Runnable uiChanger = new Runnable() {
+        @Override
+        public void run() {
+            if( card != null ) {
+
+                Cursor latest = sContext.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, null, null, null, AmbientNoise_Data.TIMESTAMP + " DESC LIMIT 1");
+                if( latest != null && latest.moveToFirst() ) {
+                    frequency.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY))) + " Hz");
+                    decibels.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.DECIBELS))) + " dB");
+                    ambient_noise.setText(latest.getInt(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT))==0?"Noisy":"Silent");
+                    rms.setText("RMS: "+String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.RMS))));
+                    rms_threshold.setText("Threshold: "+String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD))));
+                }
+                if( latest != null && ! latest.isClosed() ) latest.close();
+
+                ambient_plot = (LinearLayout) card.findViewById(R.id.ambient_plot);
+                ambient_plot.removeAllViews();
+                ambient_plot.addView(drawGraph(sContext));
+
+            }
+            uiRefresher.postDelayed(uiChanger, refresh_interval);
+        }
+    };
 
     /**
      * Constructor for Stream reflection
      */
     public ContextCard(){}
+
+    private Context sContext;
+
+    private View card;
+    private TextView frequency, decibels, ambient_noise, rms, rms_threshold;
+    private LinearLayout ambient_plot;
+
+    private LayoutInflater sInflater;
 	
 	public View getContextCard(Context context) {
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View card = inflater.inflate(R.layout.ambient_layout, null);
+
+        sContext = context;
+
+        //Tell Android that you'll monitor the stream statuses
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Stream_UI.ACTION_AWARE_STREAM_OPEN);
+        filter.addAction(Stream_UI.ACTION_AWARE_STREAM_CLOSED);
+        context.registerReceiver(streamObs, filter);
+
+		sInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		card = sInflater.inflate(R.layout.ambient_layout, null);
 		
 		frequency = (TextView) card.findViewById(R.id.frequency);
 		decibels = (TextView) card.findViewById(R.id.decibels);
@@ -43,24 +87,13 @@ public class ContextCard implements IContextCard {
 		rms = (TextView) card.findViewById(R.id.rms);
 		rms_threshold = (TextView) card.findViewById(R.id.rms_threshold);
 
-        Cursor latest = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, null, null, null, AmbientNoise_Data.TIMESTAMP + " DESC LIMIT 1");
-        if( latest != null && latest.moveToFirst() ) {
-            frequency.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY))) + " Hz");
-            decibels.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.DECIBELS))) + " dB");
-            ambient_noise.setText(latest.getInt(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT))==0?"Noisy":"Silent");
-            rms.setText("RMS: "+String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.RMS))));
-            rms_threshold.setText("Threshold: "+String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD))));
-        }
-        if( latest != null && ! latest.isClosed() ) latest.close();
-
-		ambient_plot = (LinearLayout) card.findViewById(R.id.ambient_plot);
-		ambient_plot.removeAllViews();
-		ambient_plot.addView(drawGraph(context));
+        //Begin refresh cycle
+        uiRefresher.postDelayed(uiChanger, refresh_interval);
 
 		return card;
 	}
 	
-	private static GraphicalView drawGraph( Context context ) {
+	private GraphicalView drawGraph( Context context ) {
 		GraphicalView mChart;
 		
 		//Apply user-defined time window
@@ -138,4 +171,21 @@ public class ContextCard implements IContextCard {
 		
 		return mChart;
 	}
+
+    //This is a BroadcastReceiver that keeps track of stream status. Used to stop the refresh when user leaves the stream and restart again otherwise
+    private StreamObs streamObs = new StreamObs();
+    public class StreamObs extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if( intent.getAction().equals(Stream_UI.ACTION_AWARE_STREAM_OPEN) ) {
+                //start refreshing when user enters the stream
+                uiRefresher.postDelayed(uiChanger, refresh_interval);
+            }
+            if( intent.getAction().equals(Stream_UI.ACTION_AWARE_STREAM_CLOSED) ) {
+                //stop refreshing when user leaves the stream
+                uiRefresher.removeCallbacks(uiChanger);
+                uiRefresher.removeCallbacksAndMessages(null);
+            }
+        }
+    }
 }

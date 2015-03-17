@@ -66,7 +66,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		Preference preference = (Preference) findPreference(key);
+		Preference preference = findPreference(key);
 		
 		if( preference.getKey().equals(STATUS_PLUGIN_AMBIENT_NOISE)) {
 			boolean is_active = sharedPreferences.getBoolean(key, false);
