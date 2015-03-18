@@ -11,10 +11,9 @@ import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 public class AudioAnalysis {
 	
-	private Context context;
-	private double[] magnitudes;
-	private short[] audio_data;
-	private int buffer_size;
+	private static Context context;
+	private static short[] audio_data;
+	private static int buffer_size;
 	
 	public AudioAnalysis(Context c, short[] audio, int buffer) {
 		context = c;
@@ -23,62 +22,32 @@ public class AudioAnalysis {
 	}
 	
 	/**
-	 * Get sample Root-mean-squares value. Used to detect silence.
-	 * @return
+	 * Get sample Root Mean Squares value. Used to detect silence.
+	 * @return RMS value
 	 */
     public double getRMS() {
-        if( audio_data.length == 0) return 0;
-
         double sum = 0d;
-        for(int i=0; i<audio_data.length; i++ ) {
-            sum += audio_data[i];
+        for( short data : audio_data ) {
+            sum += data;
         }
-
         double average = sum/audio_data.length;
-
         double sumMeanSquare = 0d;
-        for(int i=0; i< audio_data[i]; i++) {
-            sumMeanSquare += Math.pow(audio_data[i]-average, 2d);
+        for( short data : audio_data ) {
+            sumMeanSquare += Math.pow(data-average, 2d);
         }
         double averageMeanSquare = sumMeanSquare/audio_data.length;
         return Math.sqrt(averageMeanSquare);
     }
-	
-	private void adaptiveThreshold() {
-		String[] projection = {
-			"MIN(" + AmbientNoise_Data.RMS + ") as minimum_rms",
-			"strftime('%d/%m/%Y'," + AmbientNoise_Data.TIMESTAMP + "/1000,'unixepoch', 'localtime') as sample_day"
-		};
-		
-		Cursor daily_minimum = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, projection, AmbientNoise_Data.RMS + " > 0 ) GROUP BY ( sample_day ", null, "timestamp ASC");
-		if( daily_minimum != null ) {
-			double minimums[] = new double[daily_minimum.getCount()];
-			if( daily_minimum.moveToFirst() ) {
-				do{
-					minimums[daily_minimum.getPosition()] = daily_minimum.getDouble(0);
-				} while( daily_minimum.moveToNext() );
-				
-				double sum = 0;
-				for( double min_day : minimums ) {
-					sum+=min_day;
-				}
-				double daily_average = sum/minimums.length;
-				Aware.setSetting(context, Settings.THRESHOLD_SILENCE_PLUGIN_AMBIENT_NOISE, String.format("%.1f", daily_average+(.25*daily_average)) );
-			}
-		}
-        if( daily_minimum!= null && ! daily_minimum.isClosed()) daily_minimum.close();
-	}
-	
+
 	//RMS to check if we are in silence
 	public boolean isSilent(double rms) {
-        adaptiveThreshold();
-		double threshold = Double.valueOf(Aware.getSetting(context, Settings.THRESHOLD_SILENCE_PLUGIN_AMBIENT_NOISE));
+        double threshold = Double.valueOf(Aware.getSetting(context, Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD));
 		return (rms <= threshold);
 	}
 	
 	/**
 	 * Get sound frequency in Hz
-	 * @return
+	 * @return Frequency in Hz
 	 */
 	public double getFrequency() {
         if( audio_data.length == 0 ) return 0;
@@ -94,10 +63,9 @@ public class AudioAnalysis {
 		DoubleFFT_1D fft = new DoubleFFT_1D(buffer_size);
 		fft.realForward(fft_buffer);
 		
-		//Fetch power spectrum (magnitudes)
-		//and normalize them
-		magnitudes = new double[buffer_size/2];
-		for(int i = 1; i< buffer_size/2-1; i++ ) {
+		//Fetch power spectrum (magnitudes) and normalize them
+        double[] magnitudes = new double[buffer_size/2];
+        for(int i = 1; i< buffer_size/2-1; i++ ) {
 			double real = fft_buffer[2*i];
 			double imaginary = fft_buffer[2*i+1];
 			magnitudes[i] = Math.sqrt((real*real)+(imaginary*imaginary));
@@ -117,16 +85,16 @@ public class AudioAnalysis {
 	
 	/**
 	 * Relative ambient noise in dB
+     * @return dB level
 	 */
 	public double getdB() {
 		if( audio_data.length == 0 ) return 0;
-
         double amplitude = -1;
-		for( int i=0; i<audio_data.length; i++ ) {
-			if( amplitude < audio_data[i] ) {
-				amplitude = audio_data[i];
-			}
-		}
+        for( short data : audio_data ) {
+            if( amplitude < data ) {
+                amplitude = data;
+            }
+        }
 		return Math.abs(20*Math.log10(amplitude/32768.0));
 	}
 }

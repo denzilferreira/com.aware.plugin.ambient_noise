@@ -20,7 +20,7 @@ import com.aware.utils.DatabaseHelper;
 
 public class Provider extends ContentProvider {
 	
-	public static final int DATABASE_VERSION = 2;
+	public static final int DATABASE_VERSION = 3;
 	
 	/**
 	 * Provider authority: com.aware.plugin.ambient_noise.provider.ambient_noise
@@ -45,6 +45,7 @@ public class Provider extends ContentProvider {
 		AmbientNoise_Data.RMS + " real default 0," +
 		AmbientNoise_Data.IS_SILENT + " integer default 0," +
 		AmbientNoise_Data.SILENCE_THRESHOLD + " real default 0," +
+        AmbientNoise_Data.RAW + " blob default null," +
 		"UNIQUE("+AmbientNoise_Data.TIMESTAMP+","+AmbientNoise_Data.DEVICE_ID+")"
 	};
 	
@@ -62,6 +63,7 @@ public class Provider extends ContentProvider {
 		public static final String DECIBELS = "double_decibels";
 		public static final String RMS = "double_rms";
 		public static final String IS_SILENT = "is_silent";
+        public static final String RAW = "raw";
 		public static final String SILENCE_THRESHOLD = "double_silence_threshold";
 	}
 	
@@ -79,7 +81,7 @@ public class Provider extends ContentProvider {
 		URIMatcher.addURI(AUTHORITY, DATABASE_TABLES[0], AMBIENT_NOISE);
 		URIMatcher.addURI(AUTHORITY, DATABASE_TABLES[0]+"/#", AMBIENT_NOISE_ID);
 		
-		databaseMap = new HashMap<String, String>();
+		databaseMap = new HashMap<>();
 		databaseMap.put(AmbientNoise_Data._ID, AmbientNoise_Data._ID);
 		databaseMap.put(AmbientNoise_Data.TIMESTAMP, AmbientNoise_Data.TIMESTAMP);
 		databaseMap.put(AmbientNoise_Data.DEVICE_ID, AmbientNoise_Data.DEVICE_ID);
@@ -87,6 +89,7 @@ public class Provider extends ContentProvider {
 		databaseMap.put(AmbientNoise_Data.DECIBELS, AmbientNoise_Data.DECIBELS);
 		databaseMap.put(AmbientNoise_Data.RMS, AmbientNoise_Data.RMS);
 		databaseMap.put(AmbientNoise_Data.IS_SILENT, AmbientNoise_Data.IS_SILENT);
+        databaseMap.put(AmbientNoise_Data.RAW, AmbientNoise_Data.RAW);
 		databaseMap.put(AmbientNoise_Data.SILENCE_THRESHOLD, AmbientNoise_Data.SILENCE_THRESHOLD);
 		
 		return true;

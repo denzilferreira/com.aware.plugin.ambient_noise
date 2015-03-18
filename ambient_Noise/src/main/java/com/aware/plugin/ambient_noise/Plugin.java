@@ -6,7 +6,9 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioRecord;
+import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.util.Log;
@@ -51,8 +53,8 @@ public class Plugin extends Aware_Plugin {
 	//AWARE context producer
 	public static ContextProducer context_producer;
 
-    private static AlarmManager alarmManager;
-    private static PendingIntent audioTask;
+    private AlarmManager alarmManager;
+    private PendingIntent audioTask;
 
 	@Override
 	public void onCreate() {
@@ -62,12 +64,16 @@ public class Plugin extends Aware_Plugin {
 		DEBUG = true;
 
 		Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, true);
+
 		if( Aware.getSetting(getApplicationContext(), Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE).length() == 0 ) {
 			Aware.setSetting(getApplicationContext(), Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE, 5);
 		}
-		if( Aware.getSetting(getApplicationContext(), Settings.THRESHOLD_SILENCE_PLUGIN_AMBIENT_NOISE).length() == 0 ) {
-			Aware.setSetting(getApplicationContext(), Settings.THRESHOLD_SILENCE_PLUGIN_AMBIENT_NOISE, 100);
-		}
+        if( Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD).length() == 0 ) {
+            Aware.setSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD, 50);
+        }
+        if( Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE).length() == 0 ) {
+            Aware.setSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE, 30);
+        }
 		
 		CONTEXT_PRODUCER = new ContextProducer() {
 			@Override
@@ -91,14 +97,15 @@ public class Plugin extends Aware_Plugin {
 
         Intent audioIntent = new Intent(this, AudioAnalyser.class);
         audioTask = PendingIntent.getService(getApplicationContext(), 0, audioIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000, Integer.parseInt(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)) * 1000, audioTask);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1000, Integer.parseInt(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)) * 60 * 1000, audioTask);
 	}
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
         alarmManager.cancel(audioTask);
+        Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
+        sendBroadcast(new Intent(Aware.ACTION_AWARE_REFRESH));
 	}
 
     public static class AudioAnalyser extends IntentService {
@@ -113,12 +120,11 @@ public class Plugin extends Aware_Plugin {
 
         @Override
         protected void onHandleIntent(Intent intent) {
-
-            //Get minimum size of the buffer for pre-determined audio setup
-            int buffer_size = AudioRecord.getMinBufferSize( 8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT) * 3;
+            //Get minimum size of the buffer for pre-determined audio setup and minutes
+            int buffer_size = AudioRecord.getMinBufferSize(AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_SYSTEM), AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT ) * 10;
 
             //Initialize audio recorder. Use MediaRecorder.AudioSource.VOICE_RECOGNITION to disable Automated Voice Gain from microphone and use DSP if available
-            AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, 8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, buffer_size);
+            AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_SYSTEM), AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, buffer_size);
 
             //Audio data buffer
             short[] audio_data = new short[buffer_size];
@@ -128,9 +134,17 @@ public class Plugin extends Aware_Plugin {
                     recorder.startRecording();
                 }
 
+                double now = System.currentTimeMillis();
+                double elapsed = 0;
+                while( elapsed < Integer.parseInt(Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE)) * 1000 ) {
+                    //wait...
+                    elapsed = System.currentTimeMillis() - now;
+                    Log.d(TAG,"Recording... " + elapsed/1000 + " seconds");
+                }
+
                 recorder.read(audio_data, 0, buffer_size);
 
-                AudioAnalysis audio_analysis = new AudioAnalysis(getApplicationContext(), audio_data, buffer_size);
+                AudioAnalysis audio_analysis = new AudioAnalysis( getApplicationContext(), audio_data, buffer_size );
 
                 sound_rms = audio_analysis.getRMS();
                 is_silent = audio_analysis.isSilent(sound_rms);
@@ -144,7 +158,8 @@ public class Plugin extends Aware_Plugin {
                 data.put(AmbientNoise_Data.DECIBELS, sound_db);
                 data.put(AmbientNoise_Data.RMS, sound_rms);
                 data.put(AmbientNoise_Data.IS_SILENT, is_silent);
-                data.put(AmbientNoise_Data.SILENCE_THRESHOLD, Aware.getSetting(getApplicationContext(), Settings.THRESHOLD_SILENCE_PLUGIN_AMBIENT_NOISE));
+                data.put(AmbientNoise_Data.RAW, String.valueOf(audio_data));
+                data.put(AmbientNoise_Data.SILENCE_THRESHOLD, Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD));
 
                 getContentResolver().insert(AmbientNoise_Data.CONTENT_URI, data);
 
