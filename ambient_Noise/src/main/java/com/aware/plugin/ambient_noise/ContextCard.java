@@ -151,7 +151,7 @@ public class ContextCard implements IContextCard {
         bottom.setDrawGridLines(false);
 
         mChart.setData(data);
-        mChart.animateX(100);
+        mChart.animateX(1000);
         mChart.invalidate();
 
 		return mChart;
