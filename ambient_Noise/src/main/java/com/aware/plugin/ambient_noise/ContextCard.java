@@ -10,9 +10,11 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
 import java.math.RoundingMode;
+import java.sql.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,11 +47,25 @@ public class ContextCard implements IContextCard {
             if( card != null ) {
                 Cursor latest = sContext.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, null, null, null, AmbientNoise_Data.TIMESTAMP + " DESC LIMIT 1");
                 if( latest != null && latest.moveToFirst() ) {
-                    frequency.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY))) + " Hz");
-                    decibels.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.DECIBELS))) + " dB");
-                    ambient_noise.setText(latest.getInt(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT))==0?"Noisy":"Silent");
-                    rms.setText("RMS: "+String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.RMS))));
-                    rms_threshold.setText("Threshold: "+String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD))));
+                    if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY)) && ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY))) {
+                        frequency.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY))) + " Hz");
+                    } else {
+                        frequency.setText("NA Hz");
+                    }
+                    if( ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.DECIBELS)) ) {
+                        decibels.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.DECIBELS))) + " dB");
+                    } else {
+                        decibels.setText("NA dB");
+                    }
+                    if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT)) ) {
+                        ambient_noise.setText(latest.getInt(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT)) == 0 ? "Noisy" : "Silent");
+                    }
+                    if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.RMS)) && ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.RMS))) {
+                        rms.setText("RMS: " + String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.RMS))));
+                    }
+                    if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD)) && ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD))) {
+                        rms_threshold.setText("Threshold: "+String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD))));
+                    }
                 }
                 if( latest != null && ! latest.isClosed() ) latest.close();
 
@@ -65,10 +82,9 @@ public class ContextCard implements IContextCard {
     public ContextCard(){}
 
     private Context sContext;
-    private int refresh_interval = 5 * 1000;
+    private int refresh_interval = 60000; //every minute
     private View card;
     private TextView frequency, decibels, ambient_noise, rms, rms_threshold;
-    private LinearLayout ambient_plot;
     private BarChart mChart;
 
     public View getContextCard(Context context) {
@@ -83,8 +99,6 @@ public class ContextCard implements IContextCard {
 
 		LayoutInflater sInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		card = sInflater.inflate(R.layout.ambient_layout, null);
-
-        ambient_plot = (LinearLayout) card.findViewById(R.id.ambient_plot);
         mChart = (BarChart) card.findViewById(R.id.bar_chart);
         mChart = drawGraph(context);
 		
@@ -102,7 +116,10 @@ public class ContextCard implements IContextCard {
 	
 	private BarChart drawGraph( Context context ) {
 
-        String[] x_hours = new String[]{"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23"};
+        ArrayList<String> x_hours = new ArrayList<>();
+        for(int i=0; i<24; i++) {
+            x_hours.add(String.valueOf(i));
+        }
 
         //Get today's time from the beginning in milliseconds
         Calendar c = Calendar.getInstance();
@@ -112,31 +129,48 @@ public class ContextCard implements IContextCard {
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
 
-        ArrayList<BarEntry> y_data = new ArrayList<>();
-        Cursor latest = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, new String[]{ "AVG(" + AmbientNoise_Data.DECIBELS +") as average", "strftime('%H'," + AmbientNoise_Data.TIMESTAMP +"/1000, 'unixepoch','localtime')+0 as time_of_day" }, AmbientNoise_Data.TIMESTAMP + " >= " + c.getTimeInMillis() + " ) GROUP BY ( time_of_day ", null, AmbientNoise_Data.TIMESTAMP + " ASC");
-
-        Log.d(Plugin.TAG, DatabaseUtils.dumpCursorToString(latest));
+        ArrayList<BarEntry> barEntries = new ArrayList<>();
+        Cursor latest = context.getContentResolver().query(
+                AmbientNoise_Data.CONTENT_URI,
+                new String[]{ "AVG(" + AmbientNoise_Data.DECIBELS +") as average",
+                              "strftime('%H'," + AmbientNoise_Data.TIMESTAMP +"/1000, 'unixepoch','localtime')+0 as time_of_day" },
+                AmbientNoise_Data.TIMESTAMP + " >= " + c.getTimeInMillis() + " ) GROUP BY ( time_of_day ",
+                null,
+                "time_of_day ASC");
 
         if( latest != null && latest.moveToFirst() ) {
             do {
-                if( latest.getFloat(0) instanceof  ) continue;
-
-                y_data.add(new BarEntry(latest.getFloat(0), Integer.parseInt(latest.getString(1))));
+                if( ! Float.isInfinite(latest.getFloat(0)) ) {
+                    barEntries.add(new BarEntry(latest.getFloat(0), latest.getInt(1)));
+                }
             } while(latest.moveToNext());
         }
         if( latest != null && ! latest.isClosed() ) latest.close();
 
-        BarDataSet dataSet = new BarDataSet(y_data, "Ambient noise (dB)");
-        BarData data = new BarData(x_hours, dataSet);
+        BarDataSet dataSet = new BarDataSet(barEntries, "Average noise (dB)");
+        dataSet.setColor(Color.parseColor("#33B5E5"));
 
-        mChart.setDescription("Daily Noise Exposure");
+        BarData data = new BarData(x_hours, dataSet);
+        mChart.setContentDescription("Daily Noise Exposure");
+        mChart.setDescription("");
         mChart.setMinimumHeight(200);
         mChart.setBackgroundColor(Color.WHITE);
         mChart.setDrawGridBackground(false);
         mChart.setDrawBorders(false);
 
-        XAxis xs = mChart.getXAxis();
-        xs.setPosition(XAxis.XAxisPosition.BOTTOM);
+        YAxis left = mChart.getAxisLeft();
+        left.setDrawLabels(false);
+        left.setDrawGridLines(false);
+        left.setDrawAxisLine(false);
+        YAxis right = mChart.getAxisRight();
+        right.setDrawAxisLine(false);
+        right.setDrawLabels(false);
+        right.setDrawGridLines(false);
+
+        XAxis bottom = mChart.getXAxis();
+        bottom.setPosition(XAxis.XAxisPosition.BOTTOM);
+        bottom.setSpaceBetweenLabels(0);
+        bottom.setDrawGridLines(false);
 
         mChart.setData(data);
         mChart.invalidate();

@@ -144,14 +144,12 @@ public class Plugin extends Aware_Plugin {
                 double elapsed = 0;
                 while( elapsed < Integer.parseInt(Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE)) * 1000 ) {
                     //wait...
-                    elapsed = System.currentTimeMillis() - now;
-                    Log.d(TAG,"Recording... " + elapsed/1000 + " seconds");
+                    elapsed = System.currentTimeMillis()-now;
                 }
 
                 recorder.read(audio_data, 0, buffer_size);
 
                 AudioAnalysis audio_analysis = new AudioAnalysis( getApplicationContext(), audio_data, buffer_size );
-
                 sound_rms = audio_analysis.getRMS();
                 is_silent = audio_analysis.isSilent(sound_rms);
                 sound_frequency = audio_analysis.getFrequency();
