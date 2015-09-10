@@ -53,7 +53,7 @@
         android:text="RMS: "
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#000"
-        android:textSize="8sp" />
+        android:textSize="10sp" />
 
     <TextView
         android:id="@+id/rms_threshold"
@@ -64,7 +64,7 @@
         android:text="Threshold:"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#000"
-        android:textSize="8sp" />
+        android:textSize="10sp" />
 
     <LinearLayout
         android:id="@+id/ambient_plot"

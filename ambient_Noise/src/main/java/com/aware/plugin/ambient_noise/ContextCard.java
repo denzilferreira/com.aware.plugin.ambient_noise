@@ -40,76 +40,54 @@ import java.util.Calendar;
 
 public class ContextCard implements IContextCard {
 
-    private Handler uiRefresher = new Handler(Looper.getMainLooper());
-    private Runnable uiChanger = new Runnable() {
-        @Override
-        public void run() {
-            if( card != null ) {
-                Cursor latest = sContext.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, null, null, null, AmbientNoise_Data.TIMESTAMP + " DESC LIMIT 1");
-                if( latest != null && latest.moveToFirst() ) {
-                    if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY)) && ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY))) {
-                        frequency.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY))) + " Hz");
-                    } else {
-                        frequency.setText("NA Hz");
-                    }
-                    if( ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.DECIBELS)) ) {
-                        decibels.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.DECIBELS))) + " dB");
-                    } else {
-                        decibels.setText("NA dB");
-                    }
-                    if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT)) ) {
-                        ambient_noise.setText(latest.getInt(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT)) == 0 ? "Noisy" : "Silent");
-                    }
-                    if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.RMS)) && ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.RMS))) {
-                        rms.setText("RMS: " + String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.RMS))));
-                    }
-                    if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD)) && ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD))) {
-                        rms_threshold.setText("Threshold: "+String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD))));
-                    }
-                }
-                if( latest != null && ! latest.isClosed() ) latest.close();
-
-                //Refresh BarChart
-                mChart = drawGraph(sContext);
-            }
-            uiRefresher.postDelayed(uiChanger, refresh_interval);
-        }
-    };
+    private BarChart mChart;
 
     /**
      * Constructor for Stream reflection
      */
     public ContextCard(){}
 
-    private Context sContext;
-    private int refresh_interval = 60000; //every minute
-    private View card;
-    private TextView frequency, decibels, ambient_noise, rms, rms_threshold;
-    private BarChart mChart;
-
     public View getContextCard(Context context) {
 
-        sContext = context;
-
-        //Tell Android that you'll monitor the stream statuses
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Stream_UI.ACTION_AWARE_STREAM_OPEN);
-        filter.addAction(Stream_UI.ACTION_AWARE_STREAM_CLOSED);
-        context.registerReceiver(streamObs, filter);
-
 		LayoutInflater sInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		card = sInflater.inflate(R.layout.ambient_layout, null);
-        mChart = (BarChart) card.findViewById(R.id.bar_chart);
-        mChart = drawGraph(context);
-		
-		frequency = (TextView) card.findViewById(R.id.frequency);
-		decibels = (TextView) card.findViewById(R.id.decibels);
-		ambient_noise = (TextView) card.findViewById(R.id.ambient_noise);
-		rms = (TextView) card.findViewById(R.id.rms);
-		rms_threshold = (TextView) card.findViewById(R.id.rms_threshold);
+		View card = sInflater.inflate(R.layout.ambient_layout, null);
+        LinearLayout ambient_container = (LinearLayout) card.findViewById(R.id.ambient_plot);
 
-        //Begin refresh cycle
-        uiRefresher.post(uiChanger);
+        mChart = (BarChart) ambient_container.findViewById(R.id.bar_chart);
+
+		TextView frequency = (TextView) card.findViewById(R.id.frequency);
+		TextView decibels = (TextView) card.findViewById(R.id.decibels);
+		TextView ambient_noise = (TextView) card.findViewById(R.id.ambient_noise);
+		TextView rms = (TextView) card.findViewById(R.id.rms);
+		TextView rms_threshold = (TextView) card.findViewById(R.id.rms_threshold);
+
+        Cursor latest = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, null, null, null, AmbientNoise_Data.TIMESTAMP + " DESC LIMIT 1");
+        if( latest != null && latest.moveToFirst() ) {
+            if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY)) && ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY))) {
+                frequency.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY))) + " Hz");
+            } else {
+                frequency.setText("NA Hz");
+            }
+            if( ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.DECIBELS)) ) {
+                decibels.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.DECIBELS))) + " dB");
+            } else {
+                decibels.setText("NA dB");
+            }
+            if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT)) ) {
+                ambient_noise.setText(latest.getInt(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT)) == 0 ? "Noisy" : "Silent");
+            }
+            if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.RMS)) && ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.RMS))) {
+                rms.setText("RMS: " + String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.RMS))));
+            }
+            if( ! latest.isNull(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD)) && ! Double.isInfinite(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD))) {
+                rms_threshold.setText("Threshold: "+String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD))));
+            }
+        }
+        if( latest != null && ! latest.isClosed() ) latest.close();
+
+        ambient_container.removeAllViews();
+        ambient_container.addView(drawGraph(context));
+        ambient_container.invalidate();
 
 		return card;
 	}
@@ -173,25 +151,9 @@ public class ContextCard implements IContextCard {
         bottom.setDrawGridLines(false);
 
         mChart.setData(data);
+        mChart.animateX(100);
         mChart.invalidate();
 
 		return mChart;
 	}
-
-    //This is a BroadcastReceiver that keeps track of stream status. Used to stop the refresh when user leaves the stream and restart again otherwise
-    private StreamObs streamObs = new StreamObs();
-    public class StreamObs extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if( intent.getAction().equals(Stream_UI.ACTION_AWARE_STREAM_OPEN) ) {
-                //start refreshing when user enters the stream
-                uiRefresher.postDelayed(uiChanger, refresh_interval);
-            }
-            if( intent.getAction().equals(Stream_UI.ACTION_AWARE_STREAM_CLOSED) ) {
-                //stop refreshing when user leaves the stream
-                uiRefresher.removeCallbacks(uiChanger);
-                uiRefresher.removeCallbacksAndMessages(null);
-            }
-        }
-    }
 }
