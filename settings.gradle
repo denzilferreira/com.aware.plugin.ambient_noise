@@ -1,2 +1,1 @@
-include ':aChartAndroidlib'
 include ':ambient_Noise'

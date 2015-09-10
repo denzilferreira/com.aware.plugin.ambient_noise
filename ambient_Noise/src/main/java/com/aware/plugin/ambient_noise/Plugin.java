@@ -97,15 +97,21 @@ public class Plugin extends Aware_Plugin {
 
         Intent audioIntent = new Intent(this, AudioAnalyser.class);
         audioTask = PendingIntent.getService(getApplicationContext(), 0, audioIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1000, Integer.parseInt(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)) * 60 * 1000, audioTask);
 	}
-	
-	@Override
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1000, Integer.parseInt(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)) * 60 * 1000, audioTask);
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
 	public void onDestroy() {
 		super.onDestroy();
         alarmManager.cancel(audioTask);
-        Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
-        sendBroadcast(new Intent(Aware.ACTION_AWARE_REFRESH));
+        Aware.stopPlugin(this, "com.aware.plugin.ambient_noise");
 	}
 
     public static class AudioAnalyser extends IntentService {

@@ -105,9 +105,9 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
             boolean is_active = sharedPreferences.getBoolean(key, false);
             Aware.setSetting(getApplicationContext(), key, is_active);
             if( is_active ) {
-                Aware.startPlugin(getApplicationContext(), getPackageName());
+                Aware.startPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");
             } else {
-                Aware.stopPlugin(getApplicationContext(), getPackageName());
+                Aware.stopPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");
             }
         }
 
