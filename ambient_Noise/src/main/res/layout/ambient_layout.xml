@@ -72,13 +72,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/decibels"
         android:layout_marginBottom="1dp"
-        android:orientation="vertical" >
-
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/bar_chart"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"/>
-
-    </LinearLayout>
+        android:orientation="vertical" />
 
 </RelativeLayout>

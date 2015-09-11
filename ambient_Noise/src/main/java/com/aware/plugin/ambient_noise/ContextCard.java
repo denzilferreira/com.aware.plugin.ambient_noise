@@ -1,46 +1,26 @@
 package com.aware.plugin.ambient_noise;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Color;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
-import com.aware.ui.Stream_UI;
 import com.aware.utils.IContextCard;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 
-import java.math.RoundingMode;
-import java.sql.Array;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ContextCard implements IContextCard {
-
-    private BarChart mChart;
 
     /**
      * Constructor for Stream reflection
@@ -52,8 +32,6 @@ public class ContextCard implements IContextCard {
 		LayoutInflater sInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View card = sInflater.inflate(R.layout.ambient_layout, null);
         LinearLayout ambient_container = (LinearLayout) card.findViewById(R.id.ambient_plot);
-
-        mChart = (BarChart) ambient_container.findViewById(R.id.bar_chart);
 
 		TextView frequency = (TextView) card.findViewById(R.id.frequency);
 		TextView decibels = (TextView) card.findViewById(R.id.decibels);
@@ -129,17 +107,20 @@ public class ContextCard implements IContextCard {
         dataSet.setColor(Color.parseColor("#33B5E5"));
 
         BarData data = new BarData(x_hours, dataSet);
+
+        BarChart mChart = new BarChart(context);
         mChart.setContentDescription("Daily Noise Exposure");
         mChart.setDescription("");
         mChart.setMinimumHeight(200);
         mChart.setBackgroundColor(Color.WHITE);
         mChart.setDrawGridBackground(false);
         mChart.setDrawBorders(false);
+        mChart.setDrawValueAboveBar(false);
 
         YAxis left = mChart.getAxisLeft();
-        left.setDrawLabels(false);
+        left.setDrawLabels(true);
         left.setDrawGridLines(false);
-        left.setDrawAxisLine(false);
+        left.setDrawAxisLine(true);
         YAxis right = mChart.getAxisRight();
         right.setDrawAxisLine(false);
         right.setDrawLabels(false);
@@ -151,8 +132,9 @@ public class ContextCard implements IContextCard {
         bottom.setDrawGridLines(false);
 
         mChart.setData(data);
-        mChart.animateX(1000);
         mChart.invalidate();
+
+        mChart.animateX(1000);
 
 		return mChart;
 	}
