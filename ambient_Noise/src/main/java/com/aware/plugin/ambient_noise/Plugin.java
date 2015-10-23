@@ -1,5 +1,6 @@
 package com.aware.plugin.ambient_noise;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -89,6 +90,8 @@ public class Plugin extends Aware_Plugin {
 		};
 		context_producer = CONTEXT_PRODUCER;
 
+        REQUIRED_PERMISSIONS.add(Manifest.permission.RECORD_AUDIO);
+
         DATABASE_TABLES = Provider.DATABASE_TABLES;
         TABLES_FIELDS = Provider.TABLES_FIELDS;
         CONTEXT_URIS = new Uri[]{ AmbientNoise_Data.CONTENT_URI };
@@ -101,6 +104,7 @@ public class Plugin extends Aware_Plugin {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
 
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+1000, Integer.parseInt(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)) * 60 * 1000, audioTask);
 

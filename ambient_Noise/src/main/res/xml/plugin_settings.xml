@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <com.aware.ui.Aware_Toolbar android:title="@string/app_name" />
+
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="status_plugin_ambient_noise"
