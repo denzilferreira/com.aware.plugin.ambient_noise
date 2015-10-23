@@ -8,8 +8,8 @@ android {
         applicationId "com.aware.plugin.ambient_noise"
         minSdkVersion 10
         targetSdkVersion 23
-        versionCode 11
-        versionName "1.6"
+        versionCode 12
+        versionName "1.7"
     }
 
     buildTypes {
@@ -22,6 +22,7 @@ android {
 
 repositories {
     maven { url "https://jitpack.io" }
+    maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
 }
 
 dependencies {

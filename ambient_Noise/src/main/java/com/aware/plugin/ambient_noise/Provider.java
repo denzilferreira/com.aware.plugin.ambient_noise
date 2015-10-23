@@ -30,7 +30,7 @@ public class Provider extends ContentProvider {
 	private static final int AMBIENT_NOISE = 1;
 	private static final int AMBIENT_NOISE_ID = 2;
 	
-	public static final String DATABASE_NAME = Environment.getExternalStorageDirectory() + "/AWARE/plugin_ambient_noise.db";
+	public static final String DATABASE_NAME = "plugin_ambient_noise.db";
 	
 	public static final String[] DATABASE_TABLES = {
 		"plugin_ambient_noise"
