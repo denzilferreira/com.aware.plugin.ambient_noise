@@ -8,8 +8,8 @@ android {
         applicationId "com.aware.plugin.ambient_noise"
         minSdkVersion 10
         targetSdkVersion 23
-        versionCode 12
-        versionName "1.7"
+        versionCode 14
+        versionName "1.9"
     }
 
     buildTypes {
@@ -29,6 +29,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:cardview-v7:23.1.0'
-    compile 'com.awareframework:aware-core:+@aar'
+    compile 'com.awareframework:aware-core:3.7.7@aar'
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.3'
 }
