@@ -1,6 +1,5 @@
 package com.aware.plugin.ambient_noise;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -34,6 +33,9 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	 */
 	public static final String PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD = "plugin_ambient_noise_silence_threshold";
 
+    private static CheckBoxPreference active;
+    private static EditTextPreference frequency, listen, silence;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,50 +45,33 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	}
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        //We are done, ask AWARE to apply new settings
-        sendBroadcast(new Intent(Aware.ACTION_AWARE_REFRESH));
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        syncSettings();
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        syncSettings();
-    }
-
-    private void syncSettings() {
-		CheckBoxPreference active = (CheckBoxPreference) findPreference(STATUS_PLUGIN_AMBIENT_NOISE);
+        active = (CheckBoxPreference) findPreference(STATUS_PLUGIN_AMBIENT_NOISE);
         if( Aware.getSetting(getApplicationContext(), STATUS_PLUGIN_AMBIENT_NOISE).length() == 0 ) {
             Aware.setSetting(getApplicationContext(), STATUS_PLUGIN_AMBIENT_NOISE, true);
         }
-		active.setChecked(Aware.getSetting(getApplicationContext(), STATUS_PLUGIN_AMBIENT_NOISE).equals("true"));
-		
-		EditTextPreference frequency = (EditTextPreference) findPreference(FREQUENCY_PLUGIN_AMBIENT_NOISE);
-		if( Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE).length() == 0 ) {
-			Aware.setSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE, 5);
-		}
-		frequency.setSummary("Every " + Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE) + " minutes");
+        active.setChecked(Aware.getSetting(getApplicationContext(), STATUS_PLUGIN_AMBIENT_NOISE).equals("true"));
 
-        EditTextPreference listen = (EditTextPreference) findPreference(PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE);
+        frequency = (EditTextPreference) findPreference(FREQUENCY_PLUGIN_AMBIENT_NOISE);
+        if( Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE).length() == 0 ) {
+            Aware.setSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE, 5);
+        }
+        frequency.setSummary("Every " + Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE) + " minutes");
+
+        listen = (EditTextPreference) findPreference(PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE);
         if( Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE).length() == 0 ) {
             Aware.setSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE, 30);
         }
         listen.setSummary("Listen " + Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE) + " second(s)");
 
-        EditTextPreference silence = (EditTextPreference) findPreference(PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD);
-		if( Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD).length() == 0 ) {
-			Aware.setSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD, 50);
-		}
+        silence = (EditTextPreference) findPreference(PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD);
+        if( Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD).length() == 0 ) {
+            Aware.setSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD, 50);
+        }
         silence.setSummary("Silent until " + Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD) + "dB");
-	}
+    }
 	
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -104,14 +89,13 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         if( preference.getKey().equals(STATUS_PLUGIN_AMBIENT_NOISE)) {
             boolean is_active = sharedPreferences.getBoolean(key, false);
             Aware.setSetting(getApplicationContext(), key, is_active);
-            if( is_active ) {
-                Aware.startPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");
-            } else {
-                Aware.stopPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");
-            }
+            active.setChecked(is_active);
         }
 
-        //Update UI
-        syncSettings();
+        if( Aware.getSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE).equals("true") ) {
+            Aware.startPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");
+        } else {
+            Aware.stopPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");
+        }
 	}
 }
