@@ -10,8 +10,6 @@
         android:theme="@style/Theme.Aware"
         tools:replace="android:icon">
 
-        <meta-data android:name="com.google.android.gms.version" tools:node="remove" />
-
         <service android:name="com.aware.plugin.ambient_noise.Plugin" android:exported="true"/>
         <activity android:name="com.aware.plugin.ambient_noise.Settings" android:exported="true" android:configChanges="keyboardHidden|orientation|screenSize" android:theme="@style/Theme.Aware"/>
         <service android:name="com.aware.plugin.ambient_noise.Plugin$AudioAnalyser" android:exported="true"/>

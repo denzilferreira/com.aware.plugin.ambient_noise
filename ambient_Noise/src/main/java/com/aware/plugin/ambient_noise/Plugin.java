@@ -62,7 +62,7 @@ public class Plugin extends Aware_Plugin {
 		super.onCreate();
 		
 		TAG = "AWARE::Ambient Noise";
-		DEBUG = true;
+		DEBUG = false;
 
 		Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, true);
 
