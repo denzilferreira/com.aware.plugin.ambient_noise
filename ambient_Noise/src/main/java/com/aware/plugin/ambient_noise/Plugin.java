@@ -112,6 +112,7 @@ public class Plugin extends Aware_Plugin {
 	public void onDestroy() {
 		super.onDestroy();
         alarmManager.cancel(audioTask);
+        Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
         Aware.stopPlugin(this, "com.aware.plugin.ambient_noise");
 	}
 
@@ -171,13 +172,13 @@ public class Plugin extends Aware_Plugin {
                 //Share context
                 context_producer.onContext();
 
+                //Release microphone and stop recording
+                recorder.stop();
+                recorder.release();
+
             } else { //recorder is busy right now, let's wait 30 seconds before we try again
                 Log.d(TAG,"Recorder is busy at the moment...");
             }
-
-            //Release microphone and stop recording
-            recorder.stop();
-            recorder.release();
         }
     }
 }
