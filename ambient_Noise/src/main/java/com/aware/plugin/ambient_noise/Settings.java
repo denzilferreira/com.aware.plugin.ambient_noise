@@ -39,7 +39,8 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.xml.plugin_settings);
+
+        addPreferencesFromResource(R.xml.plugin_settings);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(this);
 	}
@@ -79,12 +80,15 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 
 		if( preference.getKey().equals(FREQUENCY_PLUGIN_AMBIENT_NOISE)) {
 			Aware.setSetting(getApplicationContext(), key, sharedPreferences.getString(key, "5"));
+            frequency.setSummary("Every " + Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE) + " minutes");
 		}
         if( preference.getKey().equals(PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE)) {
             Aware.setSetting(getApplicationContext(), key, sharedPreferences.getString(key, "30"));
+            listen.setSummary("Listen " + Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE) + " second(s)");
         }
         if( preference.getKey().equals(PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD)) {
             Aware.setSetting(getApplicationContext(), key, sharedPreferences.getString(key, "50"));
+            silence.setSummary("Silent until " + Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD) + "dB");
         }
         if( preference.getKey().equals(STATUS_PLUGIN_AMBIENT_NOISE)) {
             boolean is_active = sharedPreferences.getBoolean(key, false);

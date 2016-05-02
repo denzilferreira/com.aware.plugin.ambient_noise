@@ -11,9 +11,15 @@
         <service
             android:name="com.aware.plugin.ambient_noise.Plugin"
             android:exported="true" />
+
         <activity
             android:name="com.aware.plugin.ambient_noise.Settings"
-            android:exported="true" />
+            android:exported="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.aware.phone.Plugin_Manager" />
+        </activity>
+
         <service
             android:name="com.aware.plugin.ambient_noise.Plugin$AudioAnalyser"
             android:exported="true" />
@@ -21,20 +27,6 @@
         <provider
             android:name="com.aware.plugin.ambient_noise.Provider"
             android:authorities="com.aware.plugin.ambient_noise.provider.ambient_noise"
-            android:exported="true"
-            android:readPermission="com.aware.READ_CONTEXT_DATA"
-            android:writePermission="com.aware.WRITE_CONTEXT_DATA" />
-
-        <provider
-            android:name="com.aware.providers.Aware_Provider"
-            android:authorities="${applicationId}.provider.aware"
-            android:exported="true"
-            android:readPermission="com.aware.READ_CONTEXT_DATA"
-            android:writePermission="com.aware.WRITE_CONTEXT_DATA"/>
-
-        <provider
-            android:name="com.aware.providers.Scheduler_Provider"
-            android:authorities="${applicationId}.provider.scheduler"
             android:exported="true"
             android:readPermission="com.aware.READ_CONTEXT_DATA"
             android:writePermission="com.aware.WRITE_CONTEXT_DATA" />
