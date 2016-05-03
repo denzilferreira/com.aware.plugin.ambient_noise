@@ -20,6 +20,7 @@ import android.util.Log;
 import com.aware.Aware;
 import com.aware.Aware_Preferences;
 import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
+import com.aware.ui.PermissionsHandler;
 import com.aware.utils.Aware_Plugin;
 
 public class Plugin extends Aware_Plugin {
@@ -82,7 +83,11 @@ public class Plugin extends Aware_Plugin {
 		context_producer = CONTEXT_PRODUCER;
 
         REQUIRED_PERMISSIONS.add(Manifest.permission.RECORD_AUDIO);
-        REQUIRED_PERMISSIONS.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        Intent permissions = new Intent(this, PermissionsHandler.class);
+        permissions.putExtra(PermissionsHandler.EXTRA_REQUIRED_PERMISSIONS, REQUIRED_PERMISSIONS);
+        permissions.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(permissions);
 
         DATABASE_TABLES = Provider.DATABASE_TABLES;
         TABLES_FIELDS = Provider.TABLES_FIELDS;
