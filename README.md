@@ -26,22 +26,13 @@ Content URI
 * content://com.aware.plugin.ambient_noise.provider.ambient_noise/plugin_ambient_noise
 
 Field | Type | Description
------ | ---- | -----------
-_id | INTEGER | primary key, auto-incremented
------ | ---- | -----------
+----- | ---- | --------------------------------------------------------------
+_id | INTEGER | primary key auto-incremented
 timestamp | REAL | unix timestamp in milliseconds of sample
------ | ---- | -----------
 device_id | TEXT | AWARE device ID
------ | ---- | -----------
-double_frequency | REAL | sound frequency, in Hz
------ | ---- | -----------
-double_decibels	| REAL | sound decibels, in dB
------ | ---- | -----------
+double_frequency | REAL | sound frequency in Hz
+double_decibels	| REAL | sound decibels in dB
 double_RMS | REAL |	sound RMS
------ | ---- | -----------
-is_silent |	INTEGER | 0 = not silent, 1 = is silent
------ | ---- | -----------
+is_silent |	INTEGER | 0 = not silent 1 = is silent
 raw | BLOB | the audio snippet raw data collected
------ | ---- | -----------
 double_silent_threshold | REAL | the defined threshold value when classifying
------ | ---- | -----------
