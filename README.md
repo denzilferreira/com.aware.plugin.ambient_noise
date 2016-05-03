@@ -3,6 +3,8 @@ AWARE Plugin: Ambient Noise
 
 This plugin measures the ambient noise (Hz, dB) as noisy or silent moments. It adds the daily noise exposure on the stream, showing the average dB and Hz per hour throughout the day.
 
+[ ![Download](https://api.bintray.com/packages/denzilferreira/com.awareframework/com.aware.plugin.ambient_noise/images/download.svg) ](https://bintray.com/denzilferreira/com.awareframework/com.aware.plugin.ambient_noise/_latestVersion)
+
 # Settings
 - status_plugin_ambient_noise: (boolean) activate/deactivate ambient noise plugin
 - frequency_plugin_ambient_noise: (integer) interval between audio data snippets, in minutes
@@ -16,6 +18,7 @@ This plugin measures the ambient noise (Hz, dB) as noisy or silent moments. It a
     - sound_rms: (double) sound RMS (used to classify silent/not silent)
     - is_silent: (boolean) true or false if it is silent
     
+# Providers
 Ambient Noise Data
 ==================
 
@@ -23,8 +26,8 @@ Content URI
 - content://com.aware.plugin.ambient_noise.provider.ambient_noise/plugin_ambient_noise
 
 Field | Type | Description
------- | ------ | ------------
-_id | INTEGER | primary key, autoincremented
+----- | ---- | -----------
+_id | INTEGER | primary key, auto-incremented
 timestamp | REAL | unix timestamp in milliseconds of sample
 device_id | TEXT | AWARE device ID
 double_frequency | REAL | sound frequency, in Hz
