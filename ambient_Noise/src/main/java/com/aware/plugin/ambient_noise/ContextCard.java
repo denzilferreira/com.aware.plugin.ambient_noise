@@ -3,63 +3,68 @@ package com.aware.plugin.ambient_noise;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.aware.Aware;
+import com.aware.Aware_Preferences;
 import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
 import com.aware.utils.IContextCard;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ContextCard implements IContextCard {
 
     /**
      * Constructor for Stream reflection
      */
-    public ContextCard(){}
+    public ContextCard() {
+    }
 
     public View getContextCard(Context context) {
+        LayoutInflater sInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View card = sInflater.inflate(R.layout.ambient_layout, null);
+        LinearLayout plotContainer = (LinearLayout) card.findViewById(R.id.ambient_chart_container);
+        BarChart ambient_chart = (BarChart) card.findViewById(R.id.ambient_chart);
 
-		LayoutInflater sInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View card = sInflater.inflate(R.layout.ambient_layout, null);
-        LinearLayout ambient_container = (LinearLayout) card.findViewById(R.id.ambient_plot);
+        TextView frequency = (TextView) card.findViewById(R.id.frequency);
+        TextView decibels = (TextView) card.findViewById(R.id.decibels);
+        TextView ambient_noise = (TextView) card.findViewById(R.id.ambient_noise);
 
-		TextView frequency = (TextView) card.findViewById(R.id.frequency);
-		TextView decibels = (TextView) card.findViewById(R.id.decibels);
-		TextView ambient_noise = (TextView) card.findViewById(R.id.ambient_noise);
-		TextView rms = (TextView) card.findViewById(R.id.rms);
-		TextView rms_threshold = (TextView) card.findViewById(R.id.rms_threshold);
-
-        Cursor latest = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, null, AmbientNoise_Data.FREQUENCY + ">0 AND " + AmbientNoise_Data.RMS+">0", null, AmbientNoise_Data.TIMESTAMP + " DESC LIMIT 1");
-        if( latest != null && latest.moveToFirst() ) {
+        Cursor latest = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, null, AmbientNoise_Data.FREQUENCY + ">0 AND " + AmbientNoise_Data.RMS + ">0", null, AmbientNoise_Data.TIMESTAMP + " DESC LIMIT 1");
+        if (latest != null && latest.moveToFirst()) {
             frequency.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.FREQUENCY))) + " Hz");
             decibels.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.DECIBELS))) + " dB");
             ambient_noise.setText(latest.getInt(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT)) == 0 ? "Noisy" : "Silent");
-            rms.setText("RMS: " + String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.RMS))));
-            rms_threshold.setText("Threshold: "+String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.SILENCE_THRESHOLD))));
         }
-        if( latest != null && ! latest.isClosed() ) latest.close();
+        if (latest != null && !latest.isClosed()) latest.close();
 
-        ambient_container.removeAllViews();
-        ambient_container.addView(drawGraph(context));
-        ambient_container.invalidate();
+        plotContainer.removeAllViews();
+        plotContainer.addView(drawGraph(context, ambient_chart));
+        plotContainer.invalidate();
 
-		return card;
-	}
-	
-	private BarChart drawGraph( Context context ) {
+        return card;
+    }
+
+    private BarChart drawGraph(Context context, BarChart barChart) {
 
         ArrayList<String> x_hours = new ArrayList<>();
-        for(int i=0; i<24; i++) {
+        for (int i = 0; i < 24; i++) {
             x_hours.add(String.valueOf(i));
         }
 
@@ -76,20 +81,20 @@ public class ContextCard implements IContextCard {
 
         Cursor latest = context.getContentResolver().query(
                 AmbientNoise_Data.CONTENT_URI,
-                new String[]{ "AVG(" + AmbientNoise_Data.DECIBELS +") as average_db",
-                              "AVG(" + AmbientNoise_Data.FREQUENCY +") as average_hz",
-                              "strftime('%H'," + AmbientNoise_Data.TIMESTAMP +"/1000, 'unixepoch','localtime')+0 as time_of_day" },
+                new String[]{"AVG(" + AmbientNoise_Data.DECIBELS + ") as average_db",
+                        "AVG(" + AmbientNoise_Data.FREQUENCY + ") as average_hz",
+                        "strftime('%H'," + AmbientNoise_Data.TIMESTAMP + "/1000, 'unixepoch','localtime')+0 as time_of_day"},
                 AmbientNoise_Data.FREQUENCY + ">0 AND " + AmbientNoise_Data.RMS + ">0 AND " + AmbientNoise_Data.TIMESTAMP + " >= " + c.getTimeInMillis() + " ) GROUP BY ( time_of_day ",
                 null,
                 "time_of_day ASC");
 
-        if( latest != null && latest.moveToFirst() ) {
+        if (latest != null && latest.moveToFirst()) {
             do {
                 dbEntries.add(new BarEntry(latest.getFloat(0), latest.getInt(2)));
                 hzEntries.add(new BarEntry(latest.getFloat(1), latest.getInt(2)));
-            } while(latest.moveToNext());
+            } while (latest.moveToNext());
         }
-        if( latest != null && ! latest.isClosed() ) latest.close();
+        if (latest != null && !latest.isClosed()) latest.close();
 
         BarDataSet dbData = new BarDataSet(dbEntries, "Average dB");
         dbData.setColor(Color.parseColor("#33B5E5"));
@@ -99,40 +104,41 @@ public class ContextCard implements IContextCard {
         hzData.setColor(Color.parseColor("#009688"));
         hzData.setDrawValues(false);
 
-        ArrayList<BarDataSet> datasets = new ArrayList<>();
+        ArrayList<IBarDataSet> datasets = new ArrayList<>();
         datasets.add(dbData);
         datasets.add(hzData);
 
         BarData data = new BarData(x_hours, datasets);
 
-        BarChart mChart = new BarChart(context);
-        mChart.setContentDescription("");
-        mChart.setDescription("");
-        mChart.setMinimumHeight(200);
-        mChart.setBackgroundColor(Color.WHITE);
-        mChart.setDrawGridBackground(false);
-        mChart.setDrawBorders(false);
+        barChart.setContentDescription("");
+        barChart.setDescription("");
+        barChart.setMinimumHeight(200);
+        barChart.setBackgroundColor(Color.WHITE);
+        barChart.setDrawGridBackground(false);
+        barChart.setDrawBorders(false);
 
-        YAxis left = mChart.getAxisLeft();
+        barChart.getLegend().setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+
+        YAxis left = barChart.getAxisLeft();
         left.setDrawLabels(true);
         left.setDrawGridLines(true);
         left.setDrawAxisLine(true);
+        left.setGranularity(50);
 
-        YAxis right = mChart.getAxisRight();
+        YAxis right = barChart.getAxisRight();
         right.setDrawAxisLine(false);
         right.setDrawLabels(false);
         right.setDrawGridLines(false);
 
-        XAxis bottom = mChart.getXAxis();
+        XAxis bottom = barChart.getXAxis();
         bottom.setPosition(XAxis.XAxisPosition.BOTTOM);
         bottom.setSpaceBetweenLabels(0);
         bottom.setDrawGridLines(false);
 
-        mChart.setData(data);
-        mChart.invalidate();
+        barChart.setData(data);
+        barChart.invalidate();
+        barChart.animateX(1000);
 
-        mChart.animateX(1000);
-
-		return mChart;
-	}
+        return barChart;
+    }
 }

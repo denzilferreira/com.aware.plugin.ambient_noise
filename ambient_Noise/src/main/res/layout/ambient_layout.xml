@@ -38,40 +38,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginLeft="10dp"
         android:text="Silent"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black" />
-
-    <TextView
-        android:id="@+id/rms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ambient_noise"
-        android:layout_marginRight="10dp"
-        android:layout_toLeftOf="@+id/rms_threshold"
-        android:text="RMS: "
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#000"
-        android:textSize="10sp" />
-
-    <TextView
-        android:id="@+id/rms_threshold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/ambient_noise"
-        android:text="Threshold:"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#000"
-        android:textSize="10sp" />
+        android:textColor="@android:color/black"
+        android:paddingRight="5dp" />
 
     <LinearLayout
-        android:id="@+id/ambient_plot"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/decibels"
-        android:layout_marginBottom="1dp"
-        android:orientation="vertical" />
+        android:id="@+id/ambient_chart_container">
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/ambient_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="100dp" />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

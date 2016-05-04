@@ -39,7 +39,6 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
         addPreferencesFromResource(R.xml.plugin_settings);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(this);
@@ -96,7 +95,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
             active.setChecked(is_active);
         }
 
-        if( Aware.getSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE).equals("true") ) {
+        if( Aware.getSetting(getApplicationContext(), STATUS_PLUGIN_AMBIENT_NOISE).equals("true") ) {
             Aware.startPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");
         } else {
             Aware.stopPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");
