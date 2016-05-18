@@ -49,10 +49,10 @@
         android:layout_below="@+id/decibels"
         android:id="@+id/ambient_chart_container">
 
-        <com.github.mikephil.charting.charts.BarChart
+        <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/ambient_chart"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:minHeight="100dp" />
 
     </LinearLayout>
