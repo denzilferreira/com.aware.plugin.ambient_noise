@@ -23,6 +23,11 @@ import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
 import com.aware.ui.PermissionsHandler;
 import com.aware.utils.Aware_Plugin;
 
+import java.nio.ByteBuffer;
+import java.sql.Blob;
+
+import edu.emory.mathcs.utils.IOUtils;
+
 public class Plugin extends Aware_Plugin {
 	
 	/**
@@ -128,6 +133,7 @@ public class Plugin extends Aware_Plugin {
 	}
 
     public static class AudioAnalyser extends IntentService {
+
         public static double sound_frequency;
         public static double sound_db;
         public static boolean is_silent;
@@ -139,6 +145,7 @@ public class Plugin extends Aware_Plugin {
 
         @Override
         protected void onHandleIntent(Intent intent) {
+
             //Get minimum size of the buffer for pre-determined audio setup and minutes
             int buffer_size = AudioRecord.getMinBufferSize(AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_SYSTEM), AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT ) * 10;
 
@@ -164,9 +171,9 @@ public class Plugin extends Aware_Plugin {
 
                 AudioAnalysis audio_analysis = new AudioAnalysis( getApplicationContext(), audio_data, buffer_size );
                 sound_rms = audio_analysis.getRMS();
-                is_silent = audio_analysis.isSilent(sound_rms);
                 sound_frequency = audio_analysis.getFrequency();
                 sound_db = audio_analysis.getdB();
+                is_silent = audio_analysis.isSilent(sound_db);
 
                 ContentValues data = new ContentValues();
                 data.put(AmbientNoise_Data.TIMESTAMP, System.currentTimeMillis());
@@ -175,7 +182,11 @@ public class Plugin extends Aware_Plugin {
                 data.put(AmbientNoise_Data.DECIBELS, sound_db);
                 data.put(AmbientNoise_Data.RMS, sound_rms);
                 data.put(AmbientNoise_Data.IS_SILENT, is_silent);
-                data.put(AmbientNoise_Data.RAW, String.valueOf(audio_data));
+
+                ByteBuffer byteBuff = ByteBuffer.allocate(2*buffer_size);
+                for( Short a : audio_data ) byteBuff.putShort(a);
+
+                data.put(AmbientNoise_Data.RAW, byteBuff.array());
                 data.put(AmbientNoise_Data.SILENCE_THRESHOLD, Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD));
 
                 getContentResolver().insert(AmbientNoise_Data.CONTENT_URI, data);

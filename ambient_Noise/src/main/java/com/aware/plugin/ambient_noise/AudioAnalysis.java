@@ -21,7 +21,7 @@ public class AudioAnalysis {
     }
 
     /**
-     * Get sample Root Mean Squares value. Used to detect silence.
+     * Get sample Root Mean Squares value. Used to detect speech.
      *
      * @return RMS value
      */
@@ -40,9 +40,9 @@ public class AudioAnalysis {
     }
 
     //RMS to check if we are in silence
-    public boolean isSilent(double rms) {
+    public boolean isSilent(double db) {
         double threshold = Double.valueOf(Aware.getSetting(context, Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD));
-        return (rms <= threshold);
+        return (db <= threshold);
     }
 
     /**
@@ -75,7 +75,7 @@ public class AudioAnalysis {
         //find largest peak in power spectrum (magnitudes)
         double max = -1;
         int max_index = -1;
-        for (int i = 0; i < buffer_size / 2 - 1; i++) {
+        for (int i = 0; i < (buffer_size / 2) - 1; i++) {
             if (magnitudes[i] > max) {
                 max = magnitudes[i];
                 max_index = i;
