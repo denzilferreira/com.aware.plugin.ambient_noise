@@ -2,6 +2,7 @@ package com.aware.plugin.ambient_noise;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.aware.Aware;
 import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
@@ -39,7 +40,6 @@ public class AudioAnalysis {
         return Math.sqrt(averageMeanSquare);
     }
 
-    //RMS to check if we are in silence
     public boolean isSilent(double db) {
         double threshold = Double.valueOf(Aware.getSetting(context, Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD));
         return (db <= threshold);
@@ -51,7 +51,9 @@ public class AudioAnalysis {
      * @return Frequency in Hz
      */
     public double getFrequency() {
-        if (audio_data.length == 0) return 0;
+        if (audio_data.length == 0) {
+            return 0;
+        }
 
         //Create an FFT buffer
         double[] fft_buffer = new double[buffer_size * 2];

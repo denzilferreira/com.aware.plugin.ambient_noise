@@ -56,13 +56,13 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 
         frequency = (EditTextPreference) findPreference(FREQUENCY_PLUGIN_AMBIENT_NOISE);
         if( Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE).length() == 0 ) {
-            Aware.setSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE, 5);
+            Aware.setSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE, 60);
         }
-        frequency.setSummary("Every " + Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE) + " minutes");
+        frequency.setSummary("Every " + Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE) + " seconds");
 
         listen = (EditTextPreference) findPreference(PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE);
         if( Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE).length() == 0 ) {
-            Aware.setSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE, 30);
+            Aware.setSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE, 5);
         }
         listen.setSummary("Listen " + Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE) + " second(s)");
 
@@ -70,7 +70,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
         if( Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD).length() == 0 ) {
             Aware.setSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD, 50);
         }
-        silence.setSummary("Silent until " + Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD) + "dB");
+        silence.setSummary("Silent below " + Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD) + "dB");
     }
 	
 	@Override
@@ -78,16 +78,16 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 		Preference preference = findPreference(key);
 
 		if( preference.getKey().equals(FREQUENCY_PLUGIN_AMBIENT_NOISE)) {
-			Aware.setSetting(getApplicationContext(), key, sharedPreferences.getString(key, "5"));
-            frequency.setSummary("Every " + Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE) + " minutes");
+			Aware.setSetting(getApplicationContext(), key, sharedPreferences.getString(key, "60"));
+            frequency.setSummary("Every " + Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE) + " seconds");
 		}
         if( preference.getKey().equals(PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE)) {
-            Aware.setSetting(getApplicationContext(), key, sharedPreferences.getString(key, "30"));
+            Aware.setSetting(getApplicationContext(), key, sharedPreferences.getString(key, "5"));
             listen.setSummary("Listen " + Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE) + " second(s)");
         }
         if( preference.getKey().equals(PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD)) {
             Aware.setSetting(getApplicationContext(), key, sharedPreferences.getString(key, "50"));
-            silence.setSummary("Silent until " + Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD) + "dB");
+            silence.setSummary("Silent below " + Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD) + "dB");
         }
         if( preference.getKey().equals(STATUS_PLUGIN_AMBIENT_NOISE)) {
             boolean is_active = sharedPreferences.getBoolean(key, false);

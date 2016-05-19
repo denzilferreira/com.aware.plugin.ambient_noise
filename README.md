@@ -7,9 +7,9 @@ This plugin measures the ambient noise (Hz, dB) as noisy or silent moments. It a
 
 # Settings
 * **status_plugin_ambient_noise**: (boolean) activate/deactivate ambient noise plugin
-* **frequency_plugin_ambient_noise**: (integer) interval between audio data snippets, in minutes
+* **frequency_plugin_ambient_noise**: (integer) interval between audio data snippets, in seconds
 * **plugin_ambient_noise_sample_size**: (integer) For how long we collect data, in seconds
-* **plugin_ambient_noise_silence_threshold**: (integer) Above which is no longer silent, in dB
+* **plugin_ambient_noise_silence_threshold**: (integer) How many dB is a noisy environment?
 
 # Broadcasts
 **ACTION_AWARE_PLUGIN_AMBIENT_NOISE**
