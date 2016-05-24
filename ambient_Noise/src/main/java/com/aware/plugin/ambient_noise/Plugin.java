@@ -65,7 +65,7 @@ public class Plugin extends Aware_Plugin {
     public static ContextProducer context_producer;
 
     private AlarmManager alarmManager;
-    private static PendingIntent audioTask;
+    private PendingIntent audioTask;
 
     @Override
     public void onCreate() {
