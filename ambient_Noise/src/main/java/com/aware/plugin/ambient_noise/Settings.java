@@ -95,7 +95,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
             active.setChecked(is_active);
         }
 
-        if( Aware.getSetting(getApplicationContext(), STATUS_PLUGIN_AMBIENT_NOISE).equals("true") ) {
+        if( active.isChecked() ) {
             Aware.startPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");
         } else {
             Aware.stopPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");

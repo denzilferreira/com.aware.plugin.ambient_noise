@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
+import android.app.job.JobScheduler;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -102,6 +103,7 @@ public class Plugin extends Aware_Plugin {
 
         Intent audioIntent = new Intent(this, AudioAnalyser.class);
         audioTask = PendingIntent.getService(getApplicationContext(), 0, audioIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(audioTask);
 
         Aware.startPlugin(this, "com.aware.plugin.ambient_noise");
     }
@@ -121,7 +123,9 @@ public class Plugin extends Aware_Plugin {
             }
 
             alarmManager.cancel(audioTask); //remove old, create new
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000, Integer.parseInt(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)) * 1000, audioTask);
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000,
+                    Integer.parseInt(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)) * 1000,
+                    audioTask);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -173,11 +177,19 @@ public class Plugin extends Aware_Plugin {
                 double elapsed = 0;
                 while (elapsed < Integer.parseInt(Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE)) * 1000) {
                     elapsed = System.currentTimeMillis()-now;
+
+                    if (Aware.DEBUG) Log.d(TAG, "Elapsed: " + elapsed/1000 + " seconds");
                 }
 
                 recorder.read(audio_data, 0, buffer_size);
 
-                AudioAnalysis audio_analysis = new AudioAnalysis(this, audio_data, buffer_size);
+                //Release microphone and stop recording
+                recorder.stop();
+                recorder.release();
+
+                if (Aware.DEBUG) Log.d(TAG, "Finished audio sample...");
+
+                AudioAnalysis audio_analysis = new AudioAnalysis(this, audio_data, elapsed);
                 sound_rms = audio_analysis.getRMS();
                 sound_frequency = audio_analysis.getFrequency();
                 sound_db = audio_analysis.getdB();
@@ -199,18 +211,10 @@ public class Plugin extends Aware_Plugin {
 
                 getContentResolver().insert(AmbientNoise_Data.CONTENT_URI, data);
 
-                if (Aware.DEBUG) {
-                    Log.d(Plugin.TAG, data.toString());
-                }
+                if (Aware.DEBUG) Log.d(Plugin.TAG, data.toString());
 
                 //Share context
                 context_producer.onContext();
-
-                //Release microphone and stop recording
-                recorder.stop();
-                recorder.release();
-
-                if (Aware.DEBUG) Log.d(TAG, "Finished audio sample...");
 
             } else { //recorder is busy right now, let's wait 30 seconds before we try again
                 Log.d(TAG, "Recorder is busy at the moment...");

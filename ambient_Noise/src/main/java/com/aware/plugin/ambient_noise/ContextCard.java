@@ -1,52 +1,33 @@
 package com.aware.plugin.ambient_noise;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioRecord;
-import android.media.AudioTrack;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aware.Aware;
-import com.aware.Aware_Preferences;
 import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
 import com.aware.utils.IContextCard;
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-
-import java.sql.Blob;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 public class ContextCard implements IContextCard {
 
-    final Handler uiUpdater = new Handler();
-
     LineChart ambient_chart;
+    LineData ambient_plot = new LineData();
+
     TextView decibels;
     TextView ambient_noise;
 
@@ -56,13 +37,6 @@ public class ContextCard implements IContextCard {
      * Constructor for Stream reflection
      */
     public ContextCard() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                updateUI();
-            }
-        }, 0, 1000);
     }
 
     public View getContextCard(Context context) {
@@ -73,80 +47,79 @@ public class ContextCard implements IContextCard {
         View card = sInflater.inflate(R.layout.ambient_layout, null);
 
         ambient_chart = (LineChart) card.findViewById(R.id.ambient_chart);
+        ambient_chart.setData(ambient_plot); //set an empty line plot initially
+
+        ViewGroup.LayoutParams params = ambient_chart.getLayoutParams();
+        params.height = 300;
+        ambient_chart.setLayoutParams(params);
+        ambient_chart.setBackgroundColor(Color.WHITE);
+        ambient_chart.setDrawGridBackground(false);
+        ambient_chart.setDrawBorders(false);
+        ambient_chart.getAxisRight().setEnabled(false);
+        ambient_chart.getXAxis().setEnabled(false);
+        ambient_chart.setDragEnabled(false);
+        ambient_chart.setScaleEnabled(false);
+        ambient_chart.setPinchZoom(false);
+        ambient_chart.getLegend().setForm(Legend.LegendForm.LINE);
+        ambient_chart.setDescription("");
+        ambient_chart.setContentDescription("");
+
+        YAxis left = ambient_chart.getAxisLeft();
+        left.setDrawLabels(true);
+        left.setDrawGridLines(true);
+        left.setDrawAxisLine(true);
+        left.setGranularity(10);
+
         decibels = (TextView) card.findViewById(R.id.decibels);
         ambient_noise = (TextView) card.findViewById(R.id.ambient_noise);
+
+        updateGraph(context);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Plugin.ACTION_AWARE_PLUGIN_AMBIENT_NOISE);
+        context.registerReceiver(audioListener, filter);
 
         return card;
     }
 
-    private void updateUI() {
+    private void updateGraph(Context context) {
+        LineData currentPlot = ambient_chart.getLineData();
+        ILineDataSet set = currentPlot.getDataSetByIndex(0); //we are only plotting one
+        if (set == null) {
+            LineDataSet audioDataSet = new LineDataSet(null, "Audio sample");
+            audioDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+            audioDataSet.setColor(Color.parseColor("#33B5E5"));
+            audioDataSet.setHighLightColor(Color.parseColor("#B0C4DE"));
+            audioDataSet.setDrawValues(false);
+            audioDataSet.setDrawCircles(false);
 
-        uiUpdater.post(new Runnable() {
-            @Override
-            public void run() {
-
-                Cursor latest = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, null, null, null, AmbientNoise_Data.TIMESTAMP + " DESC LIMIT 1");
-                if (latest != null && latest.moveToFirst()) {
-                    decibels.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.DECIBELS))) + " dB");
-                    ambient_noise.setText(latest.getInt(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT)) == 0?"Noisy":"Silent");
-                }
-                if (latest != null && !latest.isClosed()) latest.close();
-
-                drawGraph(context, ambient_chart);
-            }
-        });
-    }
-
-    private LineChart drawGraph(Context context, LineChart lineChart) {
-
-        ArrayList<String> audioTimeline = new ArrayList<>();
-        ArrayList<Entry> audioSamples = new ArrayList<>();
+            set = audioDataSet;
+            currentPlot.addDataSet(set);
+        }
 
         Cursor latest = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, null, null, null, AmbientNoise_Data.TIMESTAMP + " DESC LIMIT 1");
         if (latest != null && latest.moveToFirst()) {
+            decibels.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.DECIBELS))) + " dB");
+            ambient_noise.setText(latest.getInt(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT)) == 0?"Noisy":"Silent");
+
             byte[] raw_audio = latest.getBlob(latest.getColumnIndex(AmbientNoise_Data.RAW));
-            for (int i = 0; i< raw_audio.length; i++) {
-                audioTimeline.add(String.valueOf(i));
-                audioSamples.add(new Entry(Float.parseFloat(""+ raw_audio[i]), i ));
+            for(int i = 0; i < raw_audio.length; i++) {
+                currentPlot.addXValue("" + set.getEntryCount()+1);
+                currentPlot.addEntry(new Entry(raw_audio[i], set.getEntryCount()), 0);
             }
         }
         if (latest != null && !latest.isClosed()) latest.close();
 
-        LineDataSet audioDataSet = new LineDataSet(audioSamples, "Audio sample");
-        audioDataSet.setColor(Color.parseColor("#33B5E5"));
-        audioDataSet.setDrawValues(false);
-        audioDataSet.setDrawCircles(false);
+        ambient_chart.notifyDataSetChanged();
+        ambient_chart.setVisibleXRangeMaximum(1000);
+        ambient_chart.moveViewToX(currentPlot.getXValCount()-1);
+    }
 
-        ArrayList<ILineDataSet> plotData = new ArrayList<>();
-        plotData.add(audioDataSet);
-
-        LineData audioData = new LineData(audioTimeline, plotData);
-
-        lineChart.setNoDataText("Waiting for recording data...");
-        lineChart.setDescription("");
-
-        ViewGroup.LayoutParams params = lineChart.getLayoutParams();
-        params.height = 300;
-        lineChart.setLayoutParams(params);
-        lineChart.setBackgroundColor(Color.WHITE);
-        lineChart.setDrawGridBackground(false);
-        lineChart.setDrawBorders(false);
-
-        YAxis left = lineChart.getAxisLeft();
-        left.setDrawLabels(true);
-        left.setDrawGridLines(true);
-        left.setDrawAxisLine(true);
-        left.setGranularity(50);
-
-        lineChart.getAxisRight().setEnabled(false);
-        lineChart.getXAxis().setEnabled(false);
-        lineChart.setDragEnabled(false);
-        lineChart.setScaleEnabled(false);
-        lineChart.setPinchZoom(false);
-        lineChart.getLegend().setForm(Legend.LegendForm.LINE);
-
-        lineChart.setData(audioData);
-
-        return lineChart;
+    private AudioPlotListener audioListener = new AudioPlotListener();
+    public class AudioPlotListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateGraph(context);
+        }
     }
 }

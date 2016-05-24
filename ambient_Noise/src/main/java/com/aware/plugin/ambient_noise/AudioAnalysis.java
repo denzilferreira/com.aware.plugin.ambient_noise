@@ -13,12 +13,12 @@ public class AudioAnalysis {
 
     private static Context context;
     private static short[] audio_data;
-    private static int buffer_size;
+    private static double audio_elapsed;
 
-    public AudioAnalysis(Context c, short[] audio, int buffer) {
+    public AudioAnalysis(Context c, short[] audio, double elapsed) {
         context = c;
         audio_data = audio;
-        buffer_size = buffer;
+        audio_elapsed = elapsed;
     }
 
     /**
@@ -45,45 +45,17 @@ public class AudioAnalysis {
         return (db <= threshold);
     }
 
-    /**
-     * Get sound frequency in Hz
-     *
-     * @return Frequency in Hz
-     */
-    public double getFrequency() {
-        if (audio_data.length == 0) {
-            return 0;
-        }
-
-        //Create an FFT buffer
-        double[] fft_buffer = new double[buffer_size * 2];
-        for (int i = 0; i < audio_data.length; i++) {
-            fft_buffer[2 * i] = (double) audio_data[i];
-            fft_buffer[2 * i + 1] = 0;
-        }
-
-        //apply FFT to fill imaginary buffers
-        DoubleFFT_1D fft = new DoubleFFT_1D(buffer_size);
-        fft.realForward(fft_buffer);
-
-        //Fetch power spectrum (magnitudes) and normalize them
-        double[] magnitudes = new double[buffer_size / 2];
-        for (int i = 1; i < buffer_size / 2 - 1; i++) {
-            double real = fft_buffer[2 * i];
-            double imaginary = fft_buffer[2 * i + 1];
-            magnitudes[i] = Math.sqrt((real * real) + (imaginary * imaginary));
-        }
-
-        //find largest peak in power spectrum (magnitudes)
-        double max = -1;
-        int max_index = -1;
-        for (int i = 0; i < (buffer_size / 2) - 1; i++) {
-            if (magnitudes[i] > max) {
-                max = magnitudes[i];
-                max_index = i;
+    public float getFrequency() {
+        int numSamples = audio_data.length;
+        int numCrossing = 0;
+        for (int p = 0; p < numSamples - 1; p++) {
+            if ((audio_data[p] > 0 && audio_data[p + 1] <= 0) || (audio_data[p] < 0 && audio_data[p + 1] >= 0)) {
+                numCrossing++;
             }
         }
-        return 2 * (max_index * 8000 / buffer_size);
+        float numSecondsRecorded = (float)numSamples/(float)44100;
+        float numCycles = numCrossing / 2;
+        return numCycles / (float)numSecondsRecorded;
     }
 
     /**
