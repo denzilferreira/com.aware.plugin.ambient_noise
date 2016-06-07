@@ -189,7 +189,7 @@ public class Plugin extends Aware_Plugin {
 
                 if (Aware.DEBUG) Log.d(TAG, "Finished audio sample...");
 
-                AudioAnalysis audio_analysis = new AudioAnalysis(this, audio_data, elapsed);
+                AudioAnalysis audio_analysis = new AudioAnalysis(this, audio_data);
                 sound_rms = audio_analysis.getRMS();
                 sound_frequency = audio_analysis.getFrequency();
                 sound_db = audio_analysis.getdB();

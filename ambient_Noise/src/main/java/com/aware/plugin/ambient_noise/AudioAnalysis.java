@@ -13,12 +13,10 @@ public class AudioAnalysis {
 
     private static Context context;
     private static short[] audio_data;
-    private static double audio_elapsed;
 
-    public AudioAnalysis(Context c, short[] audio, double elapsed) {
+    public AudioAnalysis(Context c, short[] audio) {
         context = c;
         audio_data = audio;
-        audio_elapsed = elapsed;
     }
 
     /**
