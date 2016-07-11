@@ -26,7 +26,6 @@
         android:summary="Listen 5 second(s)"
         android:title="How long to sample for (in seconds)" />
 
-    <!-- Default silence threshold is based on: http://www.industrialnoisecontrol.com/comparative-noise-examples.htm -->
     <EditTextPreference
         android:defaultValue="50"
         android:inputType="numberDecimal"

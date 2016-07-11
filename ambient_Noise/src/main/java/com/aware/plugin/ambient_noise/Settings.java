@@ -39,7 +39,7 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.plugin_settings);
+        addPreferencesFromResource(R.xml.preferences);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		prefs.registerOnSharedPreferenceChangeListener(this);
 	}
