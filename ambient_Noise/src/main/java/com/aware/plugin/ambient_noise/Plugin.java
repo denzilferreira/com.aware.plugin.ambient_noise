@@ -144,5 +144,6 @@ public class Plugin extends Aware_Plugin {
         Scheduler.removeSchedule(this, SCHEDULER_PLUGIN_AMBIENT_NOISE);
         Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
         Aware.stopPlugin(this, "com.aware.plugin.ambient_noise");
+        Aware.stopAWARE();
     }
 }
