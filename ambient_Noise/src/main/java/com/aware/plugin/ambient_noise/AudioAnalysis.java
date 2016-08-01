@@ -1,13 +1,14 @@
 package com.aware.plugin.ambient_noise;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.util.Log;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioRecord;
+import android.media.AudioTrack;
 
 import com.aware.Aware;
-import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
 
-import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
+import ca.uol.aig.fftpack.RealDoubleFFT;
 
 public class AudioAnalysis {
 
@@ -44,16 +45,22 @@ public class AudioAnalysis {
     }
 
     public float getFrequency() {
-        int numSamples = audio_data.length;
-        int numCrossing = 0;
-        for (int p = 0; p < numSamples - 1; p++) {
-            if ((audio_data[p] > 0 && audio_data[p + 1] <= 0) || (audio_data[p] < 0 && audio_data[p + 1] >= 0)) {
-                numCrossing++;
-            }
+        int buffer_size = AudioRecord.getMinBufferSize(AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_SYSTEM), AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT) * 10;
+
+        double[] fft = new double[buffer_size];
+        for (int i = 0; i < buffer_size; i++) {
+            fft[i] = (double) audio_data[i] / 32768.0; //signed 16-bit
         }
-        float numSecondsRecorded = (float)numSamples/(float)44100;
-        float numCycles = numCrossing / 2;
-        return numCycles / (float)numSecondsRecorded;
+
+        RealDoubleFFT transformer = new RealDoubleFFT(buffer_size);
+        transformer.ft(fft);
+
+        double hz = 0;
+        for (double d : fft) {
+            if (Math.abs(d) > hz) hz = Math.abs(d);
+        }
+
+        return (float) hz;
     }
 
     /**

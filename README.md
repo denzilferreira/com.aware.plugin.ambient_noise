@@ -1,15 +1,15 @@
 AWARE: Ambient Noise
-===========================
+====================
 
 This plugin measures the ambient noise (Hz, dB) as noisy or silent moments. It adds the daily noise exposure on the stream, showing the average dB and Hz per hour throughout the day.
 
 [ ![Download](https://api.bintray.com/packages/denzilferreira/com.awareframework/com.aware.plugin.ambient_noise/images/download.svg) ](https://bintray.com/denzilferreira/com.awareframework/com.aware.plugin.ambient_noise/_latestVersion)
 
 # Settings
-* **status_plugin_ambient_noise**: (boolean) activate/deactivate ambient noise plugin
-* **frequency_plugin_ambient_noise**: (integer) interval between audio data snippets, in seconds
-* **plugin_ambient_noise_sample_size**: (integer) For how long we collect data, in seconds
-* **plugin_ambient_noise_silence_threshold**: (integer) How many dB is a noisy environment?
+- **status_plugin_ambient_noise**: (boolean) activate/deactivate ambient noise plugin
+- **frequency_plugin_ambient_noise**: (integer) interval between audio data snippets, in minutes. Recommended value is every 5 minutes or higher.
+- **plugin_ambient_noise_sample_size**: (integer) For how long we collect data, in seconds
+- **plugin_ambient_noise_silence_threshold**: (integer) How many dB is a noisy environment?
 
 # Broadcasts
 **ACTION_AWARE_PLUGIN_AMBIENT_NOISE**
@@ -32,5 +32,5 @@ double_frequency | REAL | sound frequency in Hz
 double_decibels	| REAL | sound decibels in dB
 double_RMS | REAL |	sound RMS
 is_silent |	INTEGER | 0 = not silent 1 = is silent
-raw | BLOB | the audio snippet raw data collected
-double_silent_threshold | REAL | the defined threshold value when classifying
+double_silence_threshold | REAL | the used threshold when classifying between silent vs not silent
+blob_raw | BLOB | the audio snippet raw data collected

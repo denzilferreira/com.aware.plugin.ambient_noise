@@ -20,7 +20,7 @@ import com.aware.utils.DatabaseHelper;
 
 public class Provider extends ContentProvider {
 	
-	public static final int DATABASE_VERSION = 3;
+	public static final int DATABASE_VERSION = 4;
 	
 	/**
 	 * Provider authority: com.aware.plugin.ambient_noise.provider.ambient_noise
@@ -45,8 +45,7 @@ public class Provider extends ContentProvider {
 		AmbientNoise_Data.RMS + " real default 0," +
 		AmbientNoise_Data.IS_SILENT + " integer default 0," +
 		AmbientNoise_Data.SILENCE_THRESHOLD + " real default 0," +
-        AmbientNoise_Data.RAW + " blob default null," +
-		"UNIQUE("+AmbientNoise_Data.TIMESTAMP+","+AmbientNoise_Data.DEVICE_ID+")"
+        AmbientNoise_Data.RAW + " blob default null"
 	};
 	
 	public static final class AmbientNoise_Data implements BaseColumns {
@@ -63,7 +62,7 @@ public class Provider extends ContentProvider {
 		public static final String DECIBELS = "double_decibels";
 		public static final String RMS = "double_rms";
 		public static final String IS_SILENT = "is_silent";
-        public static final String RAW = "raw";
+        public static final String RAW = "blob_raw";
 		public static final String SILENCE_THRESHOLD = "double_silence_threshold";
 	}
 	

@@ -5,13 +5,13 @@ version = version_readable
 group = "com.awareframework"
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
 
     defaultConfig {
         applicationId "com.aware.plugin.ambient_noise"
         minSdkVersion 10
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode version_code
         versionName version_readable
     }
@@ -74,11 +74,12 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.android.support:appcompat-v7:${support_libs}"
     compile "com.awareframework:aware-core:${aware_libs}@aar"
-    compile "com.github.PhilJay:MPAndroidChart:v2.2.4"
-    compile "com.koushikdutta.ion:ion:2.1.6"
-    compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2"
+    compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
+    compile 'com.koushikdutta.ion:ion:2.1.6'
+    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2'
+    compile 'me.franfernandez:fftpack:0.1'
 }
 

@@ -1,33 +1,21 @@
 package com.aware.plugin.ambient_noise;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.AlarmManager;
-import android.app.IntentService;
 import android.app.PendingIntent;
-import android.app.job.JobScheduler;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioRecord;
-import android.media.AudioTrack;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import com.aware.Aware;
 import com.aware.Aware_Preferences;
 import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
 import com.aware.ui.PermissionsHandler;
 import com.aware.utils.Aware_Plugin;
+import com.aware.utils.Scheduler;
 
-import java.nio.ByteBuffer;
-import java.sql.Blob;
-
-import edu.emory.mathcs.utils.IOUtils;
+import org.json.JSONException;
 
 public class Plugin extends Aware_Plugin {
 
@@ -61,18 +49,16 @@ public class Plugin extends Aware_Plugin {
      */
     public static final String EXTRA_SOUND_RMS = "sound_rms";
 
+    public static final String SCHEDULER_PLUGIN_AMBIENT_NOISE = "SCHEDULER_PLUGIN_AMBIENT_NOISE";
+
     //AWARE context producer
     public static ContextProducer context_producer;
-
-    private AlarmManager alarmManager;
-    private PendingIntent audioTask;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         TAG = "AWARE::Ambient Noise";
-        DEBUG = false;
 
         CONTEXT_PRODUCER = new ContextProducer() {
             @Override
@@ -90,42 +76,64 @@ public class Plugin extends Aware_Plugin {
 
         REQUIRED_PERMISSIONS.add(Manifest.permission.RECORD_AUDIO);
 
-        Intent permissions = new Intent(this, PermissionsHandler.class);
-        permissions.putExtra(PermissionsHandler.EXTRA_REQUIRED_PERMISSIONS, REQUIRED_PERMISSIONS);
-        permissions.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(permissions);
-
         DATABASE_TABLES = Provider.DATABASE_TABLES;
         TABLES_FIELDS = Provider.TABLES_FIELDS;
         CONTEXT_URIS = new Uri[]{AmbientNoise_Data.CONTENT_URI};
-
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        Intent audioIntent = new Intent(this, AudioAnalyser.class);
-        audioTask = PendingIntent.getService(getApplicationContext(), 0, audioIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.cancel(audioTask);
 
         Aware.startPlugin(this, "com.aware.plugin.ambient_noise");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+        boolean permissions_ok = true;
+        for(String p : REQUIRED_PERMISSIONS) {
+            if (ContextCompat.checkSelfPermission(this, p) != PackageManager.PERMISSION_GRANTED) {
+                permissions_ok = false;
+                break;
+            }
+        }
+
+        if (permissions_ok) {
+            DEBUG = Aware.getSetting(this, Aware_Preferences.DEBUG_FLAG).equals("true");
+
             Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, true);
+
             if (Aware.getSetting(getApplicationContext(), Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE).length() == 0) {
-                Aware.setSetting(getApplicationContext(), Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE, 60);
+                Aware.setSetting(getApplicationContext(), Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE, 5);
+            }
+            if (Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE).length() == 0) {
+                Aware.setSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE, 30);
             }
             if (Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD).length() == 0) {
                 Aware.setSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD, 50);
             }
-            if (Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE).length() == 0) {
-                Aware.setSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE, 5);
-            }
 
-            alarmManager.cancel(audioTask); //remove old, create new
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000,
-                    Integer.parseInt(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)) * 1000,
-                    audioTask);
+            try {
+                Scheduler.Schedule audioSampler = Scheduler.getSchedule(this, SCHEDULER_PLUGIN_AMBIENT_NOISE);
+                if (audioSampler == null) {
+                    audioSampler = new Scheduler.Schedule(SCHEDULER_PLUGIN_AMBIENT_NOISE)
+                            .setInterval(Long.parseLong(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)))
+                            .setActionType(Scheduler.ACTION_TYPE_SERVICE)
+                            .setActionClass("com.aware.plugin.ambient_noise/com.aware.plugin.ambient_noise.AudioAnalyser");
+                    Scheduler.saveSchedule(this, audioSampler);
+                } else {
+                    //Check if there is a change on the sampling interval
+                    if (audioSampler.getInterval() != Long.parseLong(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE))) {
+                        audioSampler = new Scheduler.Schedule(SCHEDULER_PLUGIN_AMBIENT_NOISE)
+                                .setInterval(Long.parseLong(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)))
+                                .setActionType(Scheduler.ACTION_TYPE_SERVICE)
+                                .setActionClass("com.aware.plugin.ambient_noise/com.aware.plugin.ambient_noise.AudioAnalyser");
+                        Scheduler.saveSchedule(this, audioSampler);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Intent permissions = new Intent(this, PermissionsHandler.class);
+            permissions.putExtra(PermissionsHandler.EXTRA_REQUIRED_PERMISSIONS, REQUIRED_PERMISSIONS);
+            permissions.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(permissions);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -133,92 +141,8 @@ public class Plugin extends Aware_Plugin {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        alarmManager.cancel(audioTask);
+        Scheduler.removeSchedule(this, SCHEDULER_PLUGIN_AMBIENT_NOISE);
         Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
         Aware.stopPlugin(this, "com.aware.plugin.ambient_noise");
-    }
-
-    public static class AudioAnalyser extends IntentService {
-
-        public static double sound_frequency;
-        public static double sound_db;
-        public static boolean is_silent;
-        public static double sound_rms;
-
-        public AudioAnalyser() {
-            super(TAG);
-        }
-
-        @Override
-        protected void onHandleIntent(Intent intent) {
-
-            //Get minimum size of the buffer for pre-determined audio setup and minutes
-            int buffer_size = AudioRecord.getMinBufferSize(AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_SYSTEM), AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT) * 10;
-
-            //Initialize audio recorder. Use MediaRecorder.AudioSource.VOICE_RECOGNITION to disable Automated Voice Gain from microphone and use DSP if available
-            AudioRecord recorder = new AudioRecord(
-                    MediaRecorder.AudioSource.VOICE_RECOGNITION,
-                    AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_SYSTEM),
-                    AudioFormat.CHANNEL_IN_MONO,
-                    AudioFormat.ENCODING_PCM_16BIT,
-                    buffer_size);
-
-            //Audio data buffer
-            short[] audio_data = new short[buffer_size];
-
-            if (recorder.getState() == AudioRecord.STATE_INITIALIZED) {
-                if (recorder.getRecordingState() == AudioRecord.RECORDSTATE_STOPPED) {
-                    recorder.startRecording();
-                }
-
-                if (Aware.DEBUG) Log.d(TAG, "Collecting audio sample...");
-
-                double now = System.currentTimeMillis();
-                double elapsed = 0;
-                while (elapsed < Integer.parseInt(Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE)) * 1000) {
-                    elapsed = System.currentTimeMillis()-now;
-
-                    if (Aware.DEBUG) Log.d(TAG, "Elapsed: " + elapsed/1000 + " seconds");
-                }
-
-                recorder.read(audio_data, 0, buffer_size);
-
-                //Release microphone and stop recording
-                recorder.stop();
-                recorder.release();
-
-                if (Aware.DEBUG) Log.d(TAG, "Finished audio sample...");
-
-                AudioAnalysis audio_analysis = new AudioAnalysis(this, audio_data);
-                sound_rms = audio_analysis.getRMS();
-                sound_frequency = audio_analysis.getFrequency();
-                sound_db = audio_analysis.getdB();
-                is_silent = audio_analysis.isSilent(sound_db);
-
-                ContentValues data = new ContentValues();
-                data.put(AmbientNoise_Data.TIMESTAMP, System.currentTimeMillis());
-                data.put(AmbientNoise_Data.DEVICE_ID, Aware.getSetting(getApplicationContext(), Aware_Preferences.DEVICE_ID));
-                data.put(AmbientNoise_Data.FREQUENCY, sound_frequency);
-                data.put(AmbientNoise_Data.DECIBELS, sound_db);
-                data.put(AmbientNoise_Data.RMS, sound_rms);
-                data.put(AmbientNoise_Data.IS_SILENT, is_silent);
-
-                ByteBuffer byteBuff = ByteBuffer.allocate(2 * buffer_size);
-                for (Short a : audio_data) byteBuff.putShort(a);
-                data.put(AmbientNoise_Data.RAW, byteBuff.array());
-
-                data.put(AmbientNoise_Data.SILENCE_THRESHOLD, Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD));
-
-                getContentResolver().insert(AmbientNoise_Data.CONTENT_URI, data);
-
-                if (Aware.DEBUG) Log.d(Plugin.TAG, data.toString());
-
-                //Share context
-                context_producer.onContext();
-
-            } else { //recorder is busy right now, let's wait 30 seconds before we try again
-                Log.d(TAG, "Recorder is busy at the moment...");
-            }
-        }
     }
 }

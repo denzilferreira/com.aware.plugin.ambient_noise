@@ -17,7 +17,7 @@
             android:exported="true" />
 
         <service
-            android:name="com.aware.plugin.ambient_noise.Plugin$AudioAnalyser"
+            android:name="com.aware.plugin.ambient_noise.AudioAnalyser"
             android:exported="true" />
 
         <provider
