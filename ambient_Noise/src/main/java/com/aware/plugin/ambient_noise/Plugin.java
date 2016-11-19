@@ -114,7 +114,7 @@ public class Plugin extends Aware_Plugin {
                     audioSampler = new Scheduler.Schedule(SCHEDULER_PLUGIN_AMBIENT_NOISE)
                             .setInterval(Long.parseLong(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)))
                             .setActionType(Scheduler.ACTION_TYPE_SERVICE)
-                            .setActionClass("com.aware.plugin.ambient_noise/com.aware.plugin.ambient_noise.AudioAnalyser");
+                            .setActionClass(getPackageName() + "/" + AudioAnalyser.class.getName());
                     Scheduler.saveSchedule(this, audioSampler);
                 } else {
                     //Check if there is a change on the sampling interval
@@ -122,7 +122,7 @@ public class Plugin extends Aware_Plugin {
                         audioSampler = new Scheduler.Schedule(SCHEDULER_PLUGIN_AMBIENT_NOISE)
                                 .setInterval(Long.parseLong(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)))
                                 .setActionType(Scheduler.ACTION_TYPE_SERVICE)
-                                .setActionClass("com.aware.plugin.ambient_noise/com.aware.plugin.ambient_noise.AudioAnalyser");
+                                .setActionClass(getPackageName() + "/" + AudioAnalyser.class.getName());
                         Scheduler.saveSchedule(this, audioSampler);
                     }
                 }
@@ -143,7 +143,6 @@ public class Plugin extends Aware_Plugin {
         super.onDestroy();
         Scheduler.removeSchedule(this, SCHEDULER_PLUGIN_AMBIENT_NOISE);
         Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
-        Aware.stopPlugin(this, "com.aware.plugin.ambient_noise");
         Aware.stopAWARE();
     }
 }

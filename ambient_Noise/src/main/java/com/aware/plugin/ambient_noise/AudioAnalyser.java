@@ -91,7 +91,8 @@ public class AudioAnalyser extends IntentService {
             if (Aware.DEBUG) Log.d(Plugin.TAG, data.toString());
 
             //Share context
-            Plugin.context_producer.onContext();
+            if (Plugin.context_producer != null)
+                Plugin.context_producer.onContext();
         }
     }
 }
