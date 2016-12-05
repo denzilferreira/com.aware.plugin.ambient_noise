@@ -69,6 +69,10 @@ bintray {
     }
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 repositories {
     maven { url "https://jitpack.io" } //MPAndroidChart
 }
