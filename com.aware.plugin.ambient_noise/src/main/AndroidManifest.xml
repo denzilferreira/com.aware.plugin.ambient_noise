@@ -1,0 +1,32 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.aware.plugin.ambient_noise">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name">
+
+        <service
+            android:name="com.aware.plugin.ambient_noise.Plugin"
+            android:exported="true" />
+
+        <activity
+            android:name="com.aware.plugin.ambient_noise.Settings"
+            android:exported="true" />
+
+        <service
+            android:name="com.aware.plugin.ambient_noise.AudioAnalyser"
+            android:exported="true" />
+
+        <provider
+            android:name="com.aware.plugin.ambient_noise.Provider"
+            android:authorities="com.aware.plugin.ambient_noise.provider.ambient_noise"
+            android:exported="true"
+            android:readPermission="com.aware.READ_CONTEXT_DATA"
+            android:writePermission="com.aware.WRITE_CONTEXT_DATA" />
+
+    </application>
+
+</manifest>
