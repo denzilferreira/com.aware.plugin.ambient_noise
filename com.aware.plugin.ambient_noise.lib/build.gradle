@@ -7,7 +7,7 @@ group = "com.awareframework"
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
 //        applicationId "com.aware.plugin.ambient_noise"
@@ -109,7 +109,7 @@ dependencies {
     compile 'com.github.denzilferreira:aware-client:development-SNAPSHOT'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     compile 'com.koushikdutta.ion:ion:2.1.6'
-    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2'
+    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
     compile 'me.franfernandez:fftpack:0.1'
 }
 
