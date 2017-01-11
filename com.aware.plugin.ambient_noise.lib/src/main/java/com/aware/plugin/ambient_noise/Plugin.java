@@ -142,7 +142,8 @@ public class Plugin extends Aware_Plugin {
     public void onDestroy() {
         super.onDestroy();
         Scheduler.removeSchedule(this, SCHEDULER_PLUGIN_AMBIENT_NOISE);
+
         Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
-        Aware.stopAWARE();
+        Aware.stopAWARE(this);
     }
 }
