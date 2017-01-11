@@ -10,6 +10,7 @@
 
         <service
             android:name="com.aware.plugin.ambient_noise.Plugin"
+            android:label="AWARE: Ambient Noise"
             android:exported="true" />
 
         <activity
@@ -18,6 +19,7 @@
 
         <service
             android:name="com.aware.plugin.ambient_noise.AudioAnalyser"
+            android:label="AWARE: Ambient Noise API"
             android:exported="true" />
 
         <provider
