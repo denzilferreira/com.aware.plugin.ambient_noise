@@ -1,9 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'com.github.dcendents.android-maven'
-
-version = version_readable
-group = "com.awareframework"
 
 android {
     compileSdkVersion 25
@@ -18,13 +13,7 @@ android {
     }
 
     signingConfigs {
-        release {
-            //set values in ~/.gradle/gradle.properties to sign with your own keystore and certificate
-            storeFile file(project.hasProperty("KEYSTORE_FILE") ? KEYSTORE_FILE : "/")
-            storePassword project.hasProperty("KEYSTORE_PASSWORD") ? KEYSTORE_PASSWORD : ""
-            keyAlias project.hasProperty("KEY") ? KEY : ""
-            keyPassword project.hasProperty("KEY_PASSWORD") ? KEY_PASSWORD : ""
-        }
+        release
     }
 
     buildTypes {
@@ -40,34 +29,14 @@ android {
     }
 }
 
-bintray {
-    user = project.hasProperty("bintrayUsername") ? bintrayUsername : ""
-    key = project.hasProperty("bintrayKey") ? bintrayKey : ""
-
-    configurations = ['archives']
-
-    publish = true
-
-    pkg {
-        repo = 'com.awareframework'
-        name = "com.aware.plugin.ambient_noise"
-        licenses = ['Apache-2.0']
-        websiteUrl = 'https://github.com/denzilferreira/com.aware.plugin.ambient_noise'
-        issueTrackerUrl = 'https://github.com/denzilferreira/com.aware.plugin.ambient_noise/issues'
-        labels = ['aar', 'android', 'framework', 'aware']
-        publicDownloadNumbers = true
-        vcsUrl = 'https://github.com/denzilferreira/com.aware.plugin.ambient_noise.git'
-        desc = "AWARE Plugin: Ambient Noise"
-        userOrg = user
-        githubRepo = "denzilferreira/com.aware.plugin.ambient_noise"
-
-        version {
-            name = "$version_readable"
-            desc = bintray.pkg.desc
-            released = new Date()
-            vcsTag = "$version_readable"
-        }
-    }
+if (System.getenv("storeFile") != null && System.getenv("storePassword") != null && System.getenv("keyAlias") != null && System.getenv("keyPassword") != null) {
+    android.signingConfigs.release.storeFile = file(System.getenv("storeFile"))
+    android.signingConfigs.release.storePassword = System.getenv("storePassword")
+    android.signingConfigs.release.keyAlias = System.getenv("keyAlias")
+    android.signingConfigs.release.keyPassword = System.getenv("keyPassword")
+} else {
+    println("No keystore defined. Unsigned!")
+    android.buildTypes.release.signingConfig = null
 }
 
 task generateSourcesJar(type: Jar) {
@@ -105,11 +74,8 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.android.support:appcompat-v7:${support_libs}"
-//    compile "com.awareframework:aware-core:${aware_libs}@aar"
-    compile 'com.github.denzilferreira:aware-client:development-SNAPSHOT'
+    compile "com.github.denzilferreira:aware-client:$aware_libs"
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
-    compile 'com.koushikdutta.ion:ion:2.1.6'
-    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
     compile 'me.franfernandez:fftpack:0.1'
 }
 
