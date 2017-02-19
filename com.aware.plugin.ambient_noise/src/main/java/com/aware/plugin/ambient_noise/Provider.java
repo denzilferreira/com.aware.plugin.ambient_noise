@@ -88,13 +88,11 @@ public class Provider extends ContentProvider {
 		databaseMap.put(AmbientNoise_Data.IS_SILENT, AmbientNoise_Data.IS_SILENT);
         databaseMap.put(AmbientNoise_Data.RAW, AmbientNoise_Data.RAW);
 		databaseMap.put(AmbientNoise_Data.SILENCE_THRESHOLD, AmbientNoise_Data.SILENCE_THRESHOLD);
-
-		initialiseDatabase();
 		
 		return true;
 	}
 
-	private static DatabaseHelper dbHelper;
+	private DatabaseHelper dbHelper;
 	private static SQLiteDatabase database;
 
 	private void initialiseDatabase() {
