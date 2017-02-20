@@ -79,8 +79,6 @@ public class Plugin extends Aware_Plugin {
         DATABASE_TABLES = Provider.DATABASE_TABLES;
         TABLES_FIELDS = Provider.TABLES_FIELDS;
         CONTEXT_URIS = new Uri[]{AmbientNoise_Data.CONTENT_URI};
-
-        Aware.startPlugin(this, "com.aware.plugin.ambient_noise");
     }
 
     @Override
