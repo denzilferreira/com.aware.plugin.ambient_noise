@@ -1,17 +1,12 @@
 package com.aware.plugin.ambient_noise;
 
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
 
 import com.aware.Aware;
 import com.aware.Aware_Preferences;
 import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
-import com.aware.ui.PermissionsHandler;
 import com.aware.utils.Aware_Plugin;
 import com.aware.utils.Scheduler;
 
@@ -54,6 +49,8 @@ public class Plugin extends Aware_Plugin {
     //AWARE context producer
     public static ContextProducer context_producer;
 
+    private Intent aware;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -80,8 +77,8 @@ public class Plugin extends Aware_Plugin {
         TABLES_FIELDS = Provider.TABLES_FIELDS;
         CONTEXT_URIS = new Uri[]{AmbientNoise_Data.CONTENT_URI};
 
-        //Boot AWARE
-        Aware.startAWARE(this);
+        aware = new Intent(this, Aware.class);
+        startService(aware);
     }
 
     @Override
@@ -134,6 +131,7 @@ public class Plugin extends Aware_Plugin {
 
         Scheduler.removeSchedule(this, SCHEDULER_PLUGIN_AMBIENT_NOISE);
         Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
-        Aware.stopAWARE(this);
+
+        stopService(aware);
     }
 }
