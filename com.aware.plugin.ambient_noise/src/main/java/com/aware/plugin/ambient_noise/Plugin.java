@@ -8,6 +8,7 @@ import com.aware.Aware;
 import com.aware.Aware_Preferences;
 import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
 import com.aware.utils.Aware_Plugin;
+import com.aware.utils.PluginsManager;
 import com.aware.utils.Scheduler;
 
 import org.json.JSONException;
@@ -49,8 +50,6 @@ public class Plugin extends Aware_Plugin {
     //AWARE context producer
     public static ContextProducer context_producer;
 
-    private Intent aware;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -76,9 +75,6 @@ public class Plugin extends Aware_Plugin {
         DATABASE_TABLES = Provider.DATABASE_TABLES;
         TABLES_FIELDS = Provider.TABLES_FIELDS;
         CONTEXT_URIS = new Uri[]{AmbientNoise_Data.CONTENT_URI};
-
-        aware = new Intent(this, Aware.class);
-        startService(aware);
     }
 
     @Override
@@ -86,6 +82,9 @@ public class Plugin extends Aware_Plugin {
         super.onStartCommand(intent, flags, startId);
 
         if (PERMISSIONS_OK) {
+
+            PluginsManager.enablePlugin(this, "com.aware.plugin.ambient_noise");
+
             DEBUG = Aware.getSetting(this, Aware_Preferences.DEBUG_FLAG).equals("true");
 
             Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, true);
@@ -121,6 +120,8 @@ public class Plugin extends Aware_Plugin {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            Aware.startAWARE(this);
         }
         return START_STICKY;
     }
@@ -132,6 +133,6 @@ public class Plugin extends Aware_Plugin {
         Scheduler.removeSchedule(this, SCHEDULER_PLUGIN_AMBIENT_NOISE);
         Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
 
-        stopService(aware);
+        Aware.stopAWARE(this);
     }
 }
