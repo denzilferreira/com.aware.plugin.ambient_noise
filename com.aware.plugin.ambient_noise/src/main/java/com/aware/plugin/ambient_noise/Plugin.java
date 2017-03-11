@@ -83,8 +83,6 @@ public class Plugin extends Aware_Plugin {
 
         if (PERMISSIONS_OK) {
 
-            PluginsManager.enablePlugin(this, "com.aware.plugin.ambient_noise");
-
             DEBUG = Aware.getSetting(this, Aware_Preferences.DEBUG_FLAG).equals("true");
 
             Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, true);
@@ -121,6 +119,7 @@ public class Plugin extends Aware_Plugin {
                 e.printStackTrace();
             }
 
+            Aware.startPlugin(this, "com.aware.plugin.ambient_noise");
             Aware.startAWARE(this);
         }
         return START_STICKY;
