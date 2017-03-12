@@ -99,21 +99,12 @@ public class Plugin extends Aware_Plugin {
 
             try {
                 Scheduler.Schedule audioSampler = Scheduler.getSchedule(this, SCHEDULER_PLUGIN_AMBIENT_NOISE);
-                if (audioSampler == null) {
+                if (audioSampler == null || audioSampler.getInterval() != Long.parseLong(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE))) {
                     audioSampler = new Scheduler.Schedule(SCHEDULER_PLUGIN_AMBIENT_NOISE)
                             .setInterval(Long.parseLong(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)))
                             .setActionType(Scheduler.ACTION_TYPE_SERVICE)
                             .setActionClass(getPackageName() + "/" + AudioAnalyser.class.getName());
                     Scheduler.saveSchedule(this, audioSampler);
-                } else {
-                    //Check if there is a change on the sampling interval
-                    if (audioSampler.getInterval() != Long.parseLong(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE))) {
-                        audioSampler = new Scheduler.Schedule(SCHEDULER_PLUGIN_AMBIENT_NOISE)
-                                .setInterval(Long.parseLong(Aware.getSetting(this, Settings.FREQUENCY_PLUGIN_AMBIENT_NOISE)))
-                                .setActionType(Scheduler.ACTION_TYPE_SERVICE)
-                                .setActionClass(getPackageName() + "/" + AudioAnalyser.class.getName());
-                        Scheduler.saveSchedule(this, audioSampler);
-                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
