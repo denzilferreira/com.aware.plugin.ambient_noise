@@ -25,7 +25,7 @@ public class AudioAnalyser extends IntentService {
     public static double sound_rms;
 
     public AudioAnalyser() {
-        super(Plugin.TAG);
+        super(Aware.TAG);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class AudioAnalyser extends IntentService {
                 recorder.startRecording();
             }
 
-            if (Aware.DEBUG) Log.d(Plugin.TAG, "Collecting audio sample...");
+            if (Aware.DEBUG) Log.d(Aware.TAG, "Collecting audio sample...");
 
             double now = System.currentTimeMillis();
             double elapsed = 0;
@@ -64,7 +64,7 @@ public class AudioAnalyser extends IntentService {
             recorder.stop();
             recorder.release();
 
-            if (Aware.DEBUG) Log.d(Plugin.TAG, "Finished audio sample...");
+            if (Aware.DEBUG) Log.d(Aware.TAG, "Finished audio sample...");
 
             AudioAnalysis audio_analysis = new AudioAnalysis(this, audio_data);
             sound_rms = audio_analysis.getRMS();
@@ -88,7 +88,7 @@ public class AudioAnalyser extends IntentService {
 
             getContentResolver().insert(Provider.AmbientNoise_Data.CONTENT_URI, data);
 
-            if (Aware.DEBUG) Log.d(Plugin.TAG, data.toString());
+            if (Aware.DEBUG) Log.d(Aware.TAG, data.toString());
 
             //Share context
             if (Plugin.context_producer != null)
