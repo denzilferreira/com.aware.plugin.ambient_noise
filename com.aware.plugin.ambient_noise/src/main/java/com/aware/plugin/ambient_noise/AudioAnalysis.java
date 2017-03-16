@@ -76,6 +76,7 @@ public class AudioAnalysis {
                 amplitude = data;
             }
         }
+        if (amplitude == 0) return 0;
         return Math.abs(20 * Math.log10(amplitude / 32768.0));
     }
 }
