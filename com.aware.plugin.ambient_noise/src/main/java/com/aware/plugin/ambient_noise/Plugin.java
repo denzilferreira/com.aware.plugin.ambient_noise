@@ -110,7 +110,6 @@ public class Plugin extends Aware_Plugin {
                 e.printStackTrace();
             }
 
-            Aware.startPlugin(this, "com.aware.plugin.ambient_noise");
             Aware.startAWARE(this);
         }
         return START_STICKY;
