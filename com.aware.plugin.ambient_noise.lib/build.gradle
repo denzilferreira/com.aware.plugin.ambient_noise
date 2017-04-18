@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
 //        applicationId "com.aware.plugin.ambient_noise"
-        minSdkVersion 10
+        minSdkVersion 11
         targetSdkVersion 25
         versionCode version_code
         versionName version_readable
@@ -68,7 +68,6 @@ configurations.all {
 
 repositories {
     maven { url "https://jitpack.io" } //MPAndroidChart
-    maven { url "http://dl.bintray.com/jfrog/bintray-tools" }
 }
 
 dependencies {
