@@ -83,9 +83,11 @@ public class AudioAnalyser extends IntentService {
         data.put(Provider.AmbientNoise_Data.RMS, sound_rms);
         data.put(Provider.AmbientNoise_Data.IS_SILENT, is_silent);
 
-        ByteBuffer byteBuff = ByteBuffer.allocate(2 * buffer_size);
-        for (Short a : audio_data) byteBuff.putShort(a);
-        data.put(Provider.AmbientNoise_Data.RAW, byteBuff.array());
+        if (!Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_NO_RAW).equals("true")) {
+            ByteBuffer byteBuff = ByteBuffer.allocate(2 * buffer_size);
+            for (Short a : audio_data) byteBuff.putShort(a);
+            data.put(Provider.AmbientNoise_Data.RAW, byteBuff.array());
+        }
 
         data.put(Provider.AmbientNoise_Data.SILENCE_THRESHOLD, Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD));
 
