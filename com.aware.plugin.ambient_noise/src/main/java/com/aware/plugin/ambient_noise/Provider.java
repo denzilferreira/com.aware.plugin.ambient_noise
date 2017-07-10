@@ -103,7 +103,7 @@ public class Provider extends ContentProvider {
 	}
 	
 	@Override
-	public int delete(Uri uri, String selection, String[] selectionArgs) {
+	public synchronized int delete(Uri uri, String selection, String[] selectionArgs) {
 		initialiseDatabase();
 
 		database.beginTransaction();
@@ -138,7 +138,7 @@ public class Provider extends ContentProvider {
 	}
 
 	@Override
-	public Uri insert(Uri uri, ContentValues initialValues) {
+	public synchronized Uri insert(Uri uri, ContentValues initialValues) {
 		initialiseDatabase();
 
         ContentValues values = (initialValues != null) ? new ContentValues(
@@ -196,7 +196,7 @@ public class Provider extends ContentProvider {
 	}
 
 	@Override
-	public int update(Uri uri, ContentValues values, String selection,
+	public synchronized int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
 		initialiseDatabase();
 
