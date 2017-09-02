@@ -2,13 +2,12 @@ package com.aware.plugin.ambient_noise;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.aware.Aware;
 import com.aware.Aware_Preferences;
-import com.aware.plugin.ambient_noise.Provider.AmbientNoise_Data;
 import com.aware.utils.Aware_Plugin;
 import com.aware.utils.Scheduler;
 
@@ -72,10 +71,6 @@ public class Plugin extends Aware_Plugin {
         context_producer = CONTEXT_PRODUCER;
 
         REQUIRED_PERMISSIONS.add(Manifest.permission.RECORD_AUDIO);
-
-        DATABASE_TABLES = Provider.DATABASE_TABLES;
-        TABLES_FIELDS = Provider.TABLES_FIELDS;
-        CONTEXT_URIS = new Uri[]{AmbientNoise_Data.CONTENT_URI};
     }
 
     @Override
@@ -111,7 +106,16 @@ public class Plugin extends Aware_Plugin {
                 e.printStackTrace();
             }
 
-            if (!Aware.isSyncEnabled(this, Provider.getAuthority(this)) && Aware.isStudy(this) && getApplicationContext().getPackageName().equalsIgnoreCase("com.aware.phone") || getApplicationContext().getResources().getBoolean(R.bool.standalone)) {
+            if (Plugin.getSensorObserver() == null) {
+                Plugin.setSensorObserver(new AWARESensorObserver() {
+                    @Override
+                    public void onAmbientNoiseChanged(ContentValues data) {
+                        sendBroadcast(new Intent("AMBIENT_NOISE_DATA").putExtra("data", data));
+                    }
+                });
+            }
+
+            if (Aware.getSetting(this, Aware_Preferences.FREQUENCY_WEBSERVICE).length() >= 0 && !Aware.isSyncEnabled(this, Provider.getAuthority(this)) && Aware.isStudy(this) && getApplicationContext().getPackageName().equalsIgnoreCase("com.aware.phone") || getApplicationContext().getResources().getBoolean(R.bool.standalone)) {
                 ContentResolver.setIsSyncable(Aware.getAWAREAccount(this), Provider.getAuthority(this), 1);
                 ContentResolver.setSyncAutomatically(Aware.getAWAREAccount(this), Provider.getAuthority(this), true);
                 ContentResolver.addPeriodicSync(
@@ -144,5 +148,18 @@ public class Plugin extends Aware_Plugin {
         Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
 
         Aware.stopAWARE(this);
+    }
+
+    private static AWARESensorObserver awareSensor;
+    public static void setSensorObserver(AWARESensorObserver observer) {
+        awareSensor = observer;
+    }
+
+    public static AWARESensorObserver getSensorObserver() {
+        return awareSensor;
+    }
+
+    public interface AWARESensorObserver {
+        void onAmbientNoiseChanged(ContentValues data);
     }
 }
