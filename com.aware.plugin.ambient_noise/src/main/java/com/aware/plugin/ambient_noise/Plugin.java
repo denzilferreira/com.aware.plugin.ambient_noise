@@ -54,6 +54,8 @@ public class Plugin extends Aware_Plugin {
     public void onCreate() {
         super.onCreate();
 
+        AUTHORITY = Provider.getAuthority(this);
+
         TAG = "AWARE::Ambient Noise";
 
         CONTEXT_PRODUCER = new ContextProducer() {
