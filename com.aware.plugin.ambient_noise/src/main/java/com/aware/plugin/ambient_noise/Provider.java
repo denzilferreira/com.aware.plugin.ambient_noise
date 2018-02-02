@@ -130,7 +130,7 @@ public class Provider extends ContentProvider {
 		database.setTransactionSuccessful();
 		database.endTransaction();
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        getContext().getContentResolver().notifyChange(uri, null, false);
         return count;
 	}
 
@@ -163,8 +163,7 @@ public class Provider extends ContentProvider {
                     Uri new_uri = ContentUris.withAppendedId(
                             AmbientNoise_Data.CONTENT_URI,
                             weather_id);
-                    getContext().getContentResolver().notifyChange(new_uri,
-                            null);
+                    getContext().getContentResolver().notifyChange(new_uri, null, false);
 					database.setTransactionSuccessful();
 					database.endTransaction();
                     return new_uri;
@@ -225,7 +224,7 @@ public class Provider extends ContentProvider {
 		database.setTransactionSuccessful();
 		database.endTransaction();
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        getContext().getContentResolver().notifyChange(uri, null, false);
         return count;
 	}
 }

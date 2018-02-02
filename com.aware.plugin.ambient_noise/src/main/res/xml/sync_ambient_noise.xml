@@ -3,6 +3,6 @@
     android:accountType="com.awareframework"
     android:allowParallelSyncs="true"
     android:contentAuthority="com.aware.plugin.ambient_noise.provider.ambient_noise"
-    android:isAlwaysSyncable="false"
+    android:isAlwaysSyncable="true"
     android:supportsUploading="true"
     android:userVisible="false" />
