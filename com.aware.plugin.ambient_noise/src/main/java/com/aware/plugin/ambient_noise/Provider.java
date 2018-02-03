@@ -80,8 +80,7 @@ public class Provider extends ContentProvider {
 	
 	@Override
 	public boolean onCreate() {
-		
-		AUTHORITY = getAuthority(getContext());
+		AUTHORITY = getContext().getPackageName() + ".provider.ambient_noise";
 		
 		URIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		URIMatcher.addURI(AUTHORITY, DATABASE_TABLES[0], AMBIENT_NOISE);

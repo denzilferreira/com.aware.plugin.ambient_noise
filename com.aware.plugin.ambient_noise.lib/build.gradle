@@ -10,6 +10,8 @@ android {
         targetSdkVersion target_sdk
         versionCode version_code
         versionName version_readable
+
+        resValue "string", "provider_ambient_noise", applicationId + ".provider.ambient_noise"
     }
 
     signingConfigs {
@@ -26,6 +28,14 @@ android {
 
     lintOptions {
         abortOnError false
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs += '../com.aware.plugin.ambient_noise/src/main/java'
+            res.srcDirs += '../com.aware.plugin.ambient_noise/src/main/res'
+            manifest.srcFile '../com.aware.plugin.ambient_noise/src/main/AndroidManifest.xml'
+        }
     }
 }
 
@@ -71,9 +81,9 @@ repositories {
 }
 
 dependencies {
-    implementation "com.github.denzilferreira:aware-client:$aware_libs"
-    implementation "com.android.support:appcompat-v7:${support_libs}"
-    implementation "com.android.support:gridlayout-v7:$support_libs"
+    api "com.github.denzilferreira:aware-client:$aware_libs"
+    //implementation "com.android.support:appcompat-v7:${support_libs}"
+    //implementation "com.android.support:gridlayout-v7:$support_libs"
     implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     implementation 'me.franfernandez:fftpack:0.1'
 }
