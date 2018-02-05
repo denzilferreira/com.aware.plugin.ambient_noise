@@ -30,6 +30,7 @@
             android:label="@string/plugin_ambient_noise"
             android:authorities="${applicationId}.provider.ambient_noise"
             android:exported="true"
+            android:syncable="true"
             android:readPermission="com.aware.READ_CONTEXT_DATA"
             android:writePermission="com.aware.WRITE_CONTEXT_DATA" />
 

@@ -11,7 +11,7 @@ android {
         versionCode version_code
         versionName version_readable
 
-        resValue "string", "provider_ambient_noise", applicationId + ".provider.ambient_noise"
+        resValue "string", "provider_ambient_noise", android.defaultConfig.applicationId + ".provider.ambient_noise"
     }
 
     signingConfigs {
