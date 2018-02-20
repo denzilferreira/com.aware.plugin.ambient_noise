@@ -118,12 +118,12 @@ public class Plugin extends Aware_Plugin {
                 });
             }
 
-            if (Aware.getSetting(this, Aware_Preferences.FREQUENCY_WEBSERVICE).length() >= 0 && !Aware.isSyncEnabled(this, Provider.getAuthority(this)) && Aware.isStudy(this) && getApplicationContext().getPackageName().equalsIgnoreCase("com.aware.phone") || getApplicationContext().getResources().getBoolean(R.bool.standalone)) {
+            if (Aware.isStudy(this)) {
                 ContentResolver.setIsSyncable(Aware.getAWAREAccount(this), Provider.getAuthority(this), 1);
                 ContentResolver.setSyncAutomatically(Aware.getAWAREAccount(this), Provider.getAuthority(this), true);
                 long frequency = Long.parseLong(Aware.getSetting(this, Aware_Preferences.FREQUENCY_WEBSERVICE)) * 60;
                 SyncRequest request = new SyncRequest.Builder()
-                        .syncPeriodic(frequency, frequency/3)
+                        .syncPeriodic(frequency, frequency / 3)
                         .setSyncAdapter(Aware.getAWAREAccount(this), Provider.getAuthority(this))
                         .setExtras(new Bundle()).build();
                 ContentResolver.requestSync(request);
@@ -138,14 +138,12 @@ public class Plugin extends Aware_Plugin {
     public void onDestroy() {
         super.onDestroy();
 
-        if (Aware.isSyncEnabled(this, Provider.getAuthority(this))) {
-            ContentResolver.setSyncAutomatically(Aware.getAWAREAccount(this), Provider.getAuthority(this), false);
-            ContentResolver.removePeriodicSync(
-                    Aware.getAWAREAccount(this),
-                    Provider.getAuthority(this),
-                    Bundle.EMPTY
-            );
-        }
+        ContentResolver.setSyncAutomatically(Aware.getAWAREAccount(this), Provider.getAuthority(this), false);
+        ContentResolver.removePeriodicSync(
+                Aware.getAWAREAccount(this),
+                Provider.getAuthority(this),
+                Bundle.EMPTY
+        );
 
         Scheduler.removeSchedule(this, SCHEDULER_PLUGIN_AMBIENT_NOISE);
         Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
@@ -154,6 +152,7 @@ public class Plugin extends Aware_Plugin {
     }
 
     private static AWARESensorObserver awareSensor;
+
     public static void setSensorObserver(AWARESensorObserver observer) {
         awareSensor = observer;
     }
