@@ -1,13 +1,11 @@
 package com.aware.plugin.ambient_noise;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.ContentObserver;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,13 +23,11 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 public class ContextCard implements IContextCard {
 
-    LineChart ambient_chart;
-    LineData ambient_plot = new LineData();
+    private LineChart ambient_chart;
+    private LineData ambient_plot = new LineData();
 
-    TextView decibels;
-    TextView ambient_noise;
-
-    Context context;
+    private TextView decibels;
+    private TextView ambient_noise;
 
     /**
      * Constructor for Stream reflection
@@ -41,10 +37,7 @@ public class ContextCard implements IContextCard {
 
     public View getContextCard(Context context) {
 
-        this.context = context;
-
-        LayoutInflater sInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View card = sInflater.inflate(R.layout.ambient_layout, null);
+        View card = LayoutInflater.from(context).inflate(R.layout.ambient_layout, null);
 
         ambient_chart = (LineChart) card.findViewById(R.id.ambient_chart);
         ambient_chart.setData(ambient_plot); //set an empty line plot initially
@@ -70,19 +63,17 @@ public class ContextCard implements IContextCard {
         left.setDrawAxisLine(true);
         left.setGranularity(10);
 
-        decibels = (TextView) card.findViewById(R.id.decibels);
-        ambient_noise = (TextView) card.findViewById(R.id.ambient_noise);
+        decibels = card.findViewById(R.id.decibels);
+        ambient_noise = card.findViewById(R.id.ambient_noise);
+        ambient_noise.setText("waiting...");
 
-        updateGraph(context);
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Plugin.ACTION_AWARE_PLUGIN_AMBIENT_NOISE);
+        IntentFilter filter = new IntentFilter("AMBIENT_NOISE_DATA");
         context.registerReceiver(audioListener, filter);
 
         return card;
     }
 
-    private void updateGraph(Context context) {
+    private void updateGraph(ContentValues data) {
         LineData currentPlot = ambient_chart.getLineData();
         ILineDataSet set = currentPlot.getDataSetByIndex(0); //we are only plotting one
         if (set == null) {
@@ -97,29 +88,27 @@ public class ContextCard implements IContextCard {
             currentPlot.addDataSet(set);
         }
 
-        Cursor latest = context.getContentResolver().query(AmbientNoise_Data.CONTENT_URI, null, null, null, AmbientNoise_Data.TIMESTAMP + " DESC LIMIT 1");
-        if (latest != null && latest.moveToFirst()) {
-            decibels.setText(String.format("%.1f", latest.getDouble(latest.getColumnIndex(AmbientNoise_Data.DECIBELS))) + " dB");
-            ambient_noise.setText(latest.getInt(latest.getColumnIndex(AmbientNoise_Data.IS_SILENT)) == 0?"Noisy":"Silent");
+        decibels.setText(String.format("%.1f", data.getAsDouble(AmbientNoise_Data.DECIBELS)) + " dB");
+        ambient_noise.setText(data.getAsBoolean(AmbientNoise_Data.IS_SILENT) ? "Noisy" : "Silent");
 
-            byte[] raw_audio = latest.getBlob(latest.getColumnIndex(AmbientNoise_Data.RAW));
-            for(int i = 0; i < raw_audio.length; i++) {
-                currentPlot.addXValue("" + set.getEntryCount()+1);
-                currentPlot.addEntry(new Entry(raw_audio[i], set.getEntryCount()), 0);
-            }
+        byte[] raw_audio = data.getAsByteArray(AmbientNoise_Data.RAW);
+        for (byte point: raw_audio) {
+            currentPlot.addXValue("" + set.getEntryCount() + 1);
+            currentPlot.addEntry(new Entry(point, set.getEntryCount()), 0);
         }
-        if (latest != null && !latest.isClosed()) latest.close();
 
         ambient_chart.notifyDataSetChanged();
         ambient_chart.setVisibleXRangeMaximum(1000);
-        ambient_chart.moveViewToX(currentPlot.getXValCount()-1);
+        ambient_chart.moveViewToX(currentPlot.getXValCount() - 1);
     }
 
+    //This broadcast is auto-unregistered because it's not static
     private AudioPlotListener audioListener = new AudioPlotListener();
     public class AudioPlotListener extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateGraph(context);
+            ContentValues data = intent.getParcelableExtra("data");
+            updateGraph(data);
         }
     }
 }

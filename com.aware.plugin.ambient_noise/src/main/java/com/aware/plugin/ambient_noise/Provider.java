@@ -1,22 +1,22 @@
 package com.aware.plugin.ambient_noise;
 
-import java.util.HashMap;
-
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.aware.Aware;
 import com.aware.utils.DatabaseHelper;
+
+import java.util.HashMap;
 
 public class Provider extends ContentProvider {
 	
@@ -68,10 +68,18 @@ public class Provider extends ContentProvider {
 	
 	private static UriMatcher URIMatcher;
 	private static HashMap<String, String> databaseMap;
+
+	/**
+	 * Returns the provider authority that is dynamic
+	 * @return
+	 */
+	public static String getAuthority(Context context) {
+		AUTHORITY = context.getPackageName() + ".provider.ambient_noise";
+		return AUTHORITY;
+	}
 	
 	@Override
 	public boolean onCreate() {
-		
 		AUTHORITY = getContext().getPackageName() + ".provider.ambient_noise";
 		
 		URIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -121,7 +129,7 @@ public class Provider extends ContentProvider {
 		database.setTransactionSuccessful();
 		database.endTransaction();
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        getContext().getContentResolver().notifyChange(uri, null, false);
         return count;
 	}
 
@@ -154,8 +162,7 @@ public class Provider extends ContentProvider {
                     Uri new_uri = ContentUris.withAppendedId(
                             AmbientNoise_Data.CONTENT_URI,
                             weather_id);
-                    getContext().getContentResolver().notifyChange(new_uri,
-                            null);
+                    getContext().getContentResolver().notifyChange(new_uri, null, false);
 					database.setTransactionSuccessful();
 					database.endTransaction();
                     return new_uri;
@@ -216,7 +223,7 @@ public class Provider extends ContentProvider {
 		database.setTransactionSuccessful();
 		database.endTransaction();
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        getContext().getContentResolver().notifyChange(uri, null, false);
         return count;
 	}
 }

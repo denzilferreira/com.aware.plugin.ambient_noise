@@ -91,11 +91,12 @@ public class AudioAnalyser extends IntentService {
 
         getContentResolver().insert(Provider.AmbientNoise_Data.CONTENT_URI, data);
 
+        if (Plugin.getSensorObserver() != null)
+            Plugin.getSensorObserver().onAmbientNoiseChanged(data);
+
         if (Aware.DEBUG) Log.d(Aware.TAG, data.toString());
 
         //Share context
-        if (Plugin.context_producer != null)
-            Plugin.context_producer.onContext();
-
+        if (Plugin.context_producer != null) Plugin.context_producer.onContext();
     }
 }
