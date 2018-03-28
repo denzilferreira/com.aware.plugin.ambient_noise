@@ -33,6 +33,11 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
      */
     public static final String PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD = "plugin_ambient_noise_silence_threshold";
 
+    /**
+     * Do not include the raw sample in the data that is sent.
+     */
+    public static final String PLUGIN_AMBIENT_NOISE_NO_RAW = "plugin_ambient_noise_no_raw";
+
     private static CheckBoxPreference active;
     private static EditTextPreference frequency, listen, silence;
 
