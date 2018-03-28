@@ -89,7 +89,7 @@ public class ContextCard implements IContextCard {
         }
 
         decibels.setText(String.format("%.1f", data.getAsDouble(AmbientNoise_Data.DECIBELS)) + " dB");
-        ambient_noise.setText(data.getAsBoolean(AmbientNoise_Data.IS_SILENT) ? "Noisy" : "Silent");
+        ambient_noise.setText(data.getAsBoolean(AmbientNoise_Data.IS_SILENT) ? "Silent" : "Noisy");
 
         byte[] raw_audio = data.getAsByteArray(AmbientNoise_Data.RAW);
         for (byte point: raw_audio) {

@@ -12,7 +12,7 @@ import ca.uol.aig.fftpack.RealDoubleFFT;
 
 public class AudioAnalysis {
 
-    private static Context context;
+    private Context context;
     private static short[] audio_data;
 
     public AudioAnalysis(Context c, short[] audio) {
