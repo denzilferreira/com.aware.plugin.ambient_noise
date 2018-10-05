@@ -128,8 +128,6 @@ public class Plugin extends Aware_Plugin {
                         .setExtras(new Bundle()).build();
                 ContentResolver.requestSync(request);
             }
-
-            Aware.startAWARE(this);
         }
         return START_STICKY;
     }
@@ -147,8 +145,6 @@ public class Plugin extends Aware_Plugin {
 
         Scheduler.removeSchedule(this, SCHEDULER_PLUGIN_AMBIENT_NOISE);
         Aware.setSetting(getApplicationContext(), Settings.STATUS_PLUGIN_AMBIENT_NOISE, false);
-
-        Aware.stopAWARE(this);
     }
 
     private static AWARESensorObserver awareSensor;
