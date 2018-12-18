@@ -13,66 +13,18 @@ import com.aware.utils.Aware_Plugin;
 import com.aware.utils.Scheduler;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Plugin extends Aware_Plugin {
 
-    /**
-     * Broadcasted with sound frequency value <br/>
-     * Extra: sound_frequency, in Hz
-     */
-    public static final String ACTION_AWARE_PLUGIN_AMBIENT_NOISE = "ACTION_AWARE_PLUGIN_AMBIENT_NOISE";
-
-    /**
-     * Extra for ACTION_AWARE_PLUGIN_AMBIENT_NOISE
-     * (double) sound frequency in Hz
-     */
-    public static final String EXTRA_SOUND_FREQUENCY = "sound_frequency";
-
-    /**
-     * Extra for ACTION_AWARE_PLUGIN_AMBIENT_NOISE
-     * (boolean) true/false if silent
-     */
-    public static final String EXTRA_IS_SILENT = "is_silent";
-
-    /**
-     * Extra for ACTION_AWARE_PLUGIN_AMBIENT_NOISE
-     * (double) sound noise in dB
-     */
-    public static final String EXTRA_SOUND_DB = "sound_db";
-
-    /**
-     * Extra for ACTION_AWARE_PLUGIN_AMBIENT_NOISE
-     * (double) sound RMS
-     */
-    public static final String EXTRA_SOUND_RMS = "sound_rms";
-
     public static final String SCHEDULER_PLUGIN_AMBIENT_NOISE = "SCHEDULER_PLUGIN_AMBIENT_NOISE";
-
-    //AWARE context producer
-    public static ContextProducer context_producer;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         AUTHORITY = Provider.getAuthority(this);
-
         TAG = "AWARE::Ambient Noise";
-
-        CONTEXT_PRODUCER = new ContextProducer() {
-            @Override
-            public void onContext() {
-                Intent context_ambient_noise = new Intent();
-                context_ambient_noise.setAction(ACTION_AWARE_PLUGIN_AMBIENT_NOISE);
-                context_ambient_noise.putExtra(EXTRA_SOUND_FREQUENCY, AudioAnalyser.sound_frequency);
-                context_ambient_noise.putExtra(EXTRA_SOUND_DB, AudioAnalyser.sound_db);
-                context_ambient_noise.putExtra(EXTRA_SOUND_RMS, AudioAnalyser.sound_rms);
-                context_ambient_noise.putExtra(EXTRA_IS_SILENT, AudioAnalyser.is_silent);
-                sendBroadcast(context_ambient_noise);
-            }
-        };
-        context_producer = CONTEXT_PRODUCER;
-
         REQUIRED_PERMISSIONS.add(Manifest.permission.RECORD_AUDIO);
     }
 
@@ -107,15 +59,6 @@ public class Plugin extends Aware_Plugin {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
-
-            if (Plugin.getSensorObserver() == null) {
-                Plugin.setSensorObserver(new AWARESensorObserver() {
-                    @Override
-                    public void onAmbientNoiseChanged(ContentValues data) {
-                        sendBroadcast(new Intent("AMBIENT_NOISE_DATA").putExtra("data", data));
-                    }
-                });
             }
 
             if (Aware.isStudy(this)) {
@@ -158,6 +101,6 @@ public class Plugin extends Aware_Plugin {
     }
 
     public interface AWARESensorObserver {
-        void onAmbientNoiseChanged(ContentValues data);
+        void onRecording(ContentValues data);
     }
 }

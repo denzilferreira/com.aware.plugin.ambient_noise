@@ -9,6 +9,8 @@ import android.media.AudioTrack;
 import com.aware.Aware;
 
 import ca.uol.aig.fftpack.RealDoubleFFT;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class AudioAnalysis {
 
@@ -77,6 +79,6 @@ public class AudioAnalysis {
             }
         }
         if (amplitude == 0) return 0;
-        return Math.abs(20 * Math.log10(amplitude / 32768.0));
+        return 96 - Math.abs(20 * Math.log10(amplitude/32768.0));
     }
 }

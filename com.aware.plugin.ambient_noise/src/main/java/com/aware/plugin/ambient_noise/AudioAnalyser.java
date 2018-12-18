@@ -53,52 +53,50 @@ public class AudioAnalyser extends IntentService {
             recorder.startRecording();
         }
 
-        Log.d(Aware.TAG, "Collecting audio sample...");
+        Log.d("AWARE::Ambient Noise", "Collecting audio sample...");
 
         double now = System.currentTimeMillis();
         double elapsed = 0;
         while (elapsed < Integer.parseInt(Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SAMPLE_SIZE)) * 1000) {
             elapsed = System.currentTimeMillis() - now;
-        }
 
-        recorder.read(audio_data, 0, buffer_size);
+            int realtime_buffer = AudioRecord.getMinBufferSize(AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_SYSTEM), AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT) * 10;
+            short[] realtime = new short[realtime_buffer];
+            recorder.read(realtime, 0, realtime_buffer);
+
+            AudioAnalysis audio_analysis = new AudioAnalysis(this, realtime);
+            sound_rms = audio_analysis.getRMS();
+            sound_frequency = audio_analysis.getFrequency();
+            sound_db = audio_analysis.getdB();
+            is_silent = audio_analysis.isSilent(sound_db);
+
+            ContentValues data = new ContentValues();
+            data.put(Provider.AmbientNoise_Data.TIMESTAMP, System.currentTimeMillis());
+            data.put(Provider.AmbientNoise_Data.DEVICE_ID, Aware.getSetting(getApplicationContext(), Aware_Preferences.DEVICE_ID));
+            data.put(Provider.AmbientNoise_Data.FREQUENCY, sound_frequency);
+            data.put(Provider.AmbientNoise_Data.DECIBELS, sound_db);
+            data.put(Provider.AmbientNoise_Data.RMS, sound_rms);
+            data.put(Provider.AmbientNoise_Data.IS_SILENT, is_silent);
+
+            Log.d("AWARE::Ambient Noise", "Realtime: " + data.toString());
+
+            if (!Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_NO_RAW).equals("true")) {
+                ByteBuffer byteBuff = ByteBuffer.allocate(2 * buffer_size);
+                for (Short a : audio_data) byteBuff.putShort(a);
+                data.put(Provider.AmbientNoise_Data.RAW, byteBuff.array());
+            }
+
+            data.put(Provider.AmbientNoise_Data.SILENCE_THRESHOLD, Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD));
+            getContentResolver().insert(Provider.AmbientNoise_Data.CONTENT_URI, data);
+
+            if (Plugin.getSensorObserver() != null)
+                Plugin.getSensorObserver().onRecording(data);
+        }
 
         //Release microphone and stop recording
         recorder.stop();
         recorder.release();
 
-        Log.d(Aware.TAG, "Finished audio sample...");
-
-        AudioAnalysis audio_analysis = new AudioAnalysis(this, audio_data);
-        sound_rms = audio_analysis.getRMS();
-        sound_frequency = audio_analysis.getFrequency();
-        sound_db = audio_analysis.getdB();
-        is_silent = audio_analysis.isSilent(sound_db);
-
-        ContentValues data = new ContentValues();
-        data.put(Provider.AmbientNoise_Data.TIMESTAMP, System.currentTimeMillis());
-        data.put(Provider.AmbientNoise_Data.DEVICE_ID, Aware.getSetting(getApplicationContext(), Aware_Preferences.DEVICE_ID));
-        data.put(Provider.AmbientNoise_Data.FREQUENCY, sound_frequency);
-        data.put(Provider.AmbientNoise_Data.DECIBELS, sound_db);
-        data.put(Provider.AmbientNoise_Data.RMS, sound_rms);
-        data.put(Provider.AmbientNoise_Data.IS_SILENT, is_silent);
-
-        if (!Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_NO_RAW).equals("true")) {
-            ByteBuffer byteBuff = ByteBuffer.allocate(2 * buffer_size);
-            for (Short a : audio_data) byteBuff.putShort(a);
-            data.put(Provider.AmbientNoise_Data.RAW, byteBuff.array());
-        }
-
-        data.put(Provider.AmbientNoise_Data.SILENCE_THRESHOLD, Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_SILENCE_THRESHOLD));
-
-        getContentResolver().insert(Provider.AmbientNoise_Data.CONTENT_URI, data);
-
-        if (Plugin.getSensorObserver() != null)
-            Plugin.getSensorObserver().onAmbientNoiseChanged(data);
-
-        if (Aware.DEBUG) Log.d(Aware.TAG, data.toString());
-
-        //Share context
-        if (Plugin.context_producer != null) Plugin.context_producer.onContext();
+        Log.d("AWARE::Ambient Noise", "Finished audio sample...");
     }
 }

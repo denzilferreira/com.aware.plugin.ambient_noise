@@ -58,7 +58,7 @@ repositories {
 
 dependencies {
     api "com.github.denzilferreira:aware-client:$aware_libs"
-    implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
     implementation 'me.franfernandez:fftpack:0.1'
 }
 
