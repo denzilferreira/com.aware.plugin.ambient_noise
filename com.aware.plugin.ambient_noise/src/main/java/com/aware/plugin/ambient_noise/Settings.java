@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-
 import com.aware.Aware;
+import com.aware.ui.AppCompatPreferenceActivity;
 
-public class Settings extends PreferenceActivity implements OnSharedPreferenceChangeListener {
+public class Settings extends AppCompatPreferenceActivity implements OnSharedPreferenceChangeListener {
 
     /**
      * Activate/deactivate plugin

@@ -12,6 +12,7 @@
 
         <activity
             android:name="com.aware.plugin.ambient_noise.Settings"
+            android:label="AWARE: Ambient Noise"
             android:exported="true" />
 
         <service
