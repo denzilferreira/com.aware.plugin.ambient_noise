@@ -1,4 +1,3 @@
 <resources>
-    <string name="app_name">AWARE: Ambient Noise</string>
     <string name="plugin_ambient_noise">Plugin: Ambient Noise</string>
 </resources>
