@@ -3,14 +3,12 @@ AWARE: Ambient Noise
 
 This plugin measures the ambient noise (Hz, dB) as noisy or silent moments. It adds the daily noise exposure on the stream, showing the average dB and Hz per hour throughout the day.
 
-[![Release](https://jitpack.io/v/denzilferreira/com.aware.plugin.ambient_noise.svg)](https://jitpack.io/#denzilferreira/com.aware.plugin.ambient_noise)
-
 # Settings
 - **status_plugin_ambient_noise**: (boolean) activate/deactivate ambient noise plugin
 - **frequency_plugin_ambient_noise**: (integer) interval between audio data snippets, in minutes. Recommended value is every 5 minutes or higher.
 - **plugin_ambient_noise_sample_size**: (integer) For how long we collect data, in seconds
 - **plugin_ambient_noise_silence_threshold**: (integer) How many dB is a noisy environment?
-- **plugin_ambient_noise_no_raw**: (boolean) to enable/disable raw audio recordings. By default, the plugin records the audio snippet. Enabling this, disables that.
+- **plugin_ambient_noise_no_raw**: (boolean) to enable/disable raw audio recordings. By default, and for privacy concerns, the plugin does not records the audio snippet (true).
 
 # Broadcasts
 **ACTION_AWARE_PLUGIN_AMBIENT_NOISE**

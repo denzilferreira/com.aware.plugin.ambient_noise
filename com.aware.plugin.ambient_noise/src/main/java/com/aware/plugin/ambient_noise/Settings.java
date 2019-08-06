@@ -37,7 +37,7 @@ public class Settings extends AppCompatPreferenceActivity implements OnSharedPre
      */
     public static final String PLUGIN_AMBIENT_NOISE_NO_RAW = "plugin_ambient_noise_no_raw";
 
-    private static CheckBoxPreference active;
+    private static CheckBoxPreference active, raw;
     private static EditTextPreference frequency, listen, silence;
 
     @Override
@@ -57,6 +57,12 @@ public class Settings extends AppCompatPreferenceActivity implements OnSharedPre
             Aware.setSetting(getApplicationContext(), STATUS_PLUGIN_AMBIENT_NOISE, true);
         }
         active.setChecked(Aware.getSetting(getApplicationContext(), STATUS_PLUGIN_AMBIENT_NOISE).equals("true"));
+
+        raw = (CheckBoxPreference) findPreference(PLUGIN_AMBIENT_NOISE_NO_RAW);
+        if(Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_NO_RAW).isEmpty()) {
+            Aware.setSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_NO_RAW, true);
+        }
+        raw.setChecked(Aware.getSetting(getApplicationContext(), PLUGIN_AMBIENT_NOISE_NO_RAW).equals("true"));
 
         frequency = (EditTextPreference) findPreference(FREQUENCY_PLUGIN_AMBIENT_NOISE);
         if (Aware.getSetting(getApplicationContext(), FREQUENCY_PLUGIN_AMBIENT_NOISE).length() == 0) {
@@ -96,6 +102,11 @@ public class Settings extends AppCompatPreferenceActivity implements OnSharedPre
             Aware.setSetting(getApplicationContext(), key, sharedPreferences.getBoolean(key, false));
             active.setChecked(sharedPreferences.getBoolean(key, false));
         }
+        if (preference.getKey().equals(PLUGIN_AMBIENT_NOISE_NO_RAW)) {
+            Aware.setSetting(getApplicationContext(), key, sharedPreferences.getString(key, "true"));
+            raw.setChecked(sharedPreferences.getBoolean(key, true));
+        }
+
         if (Aware.getSetting(this, STATUS_PLUGIN_AMBIENT_NOISE).equals("true")) {
             Aware.startPlugin(getApplicationContext(), "com.aware.plugin.ambient_noise");
         } else {
