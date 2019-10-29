@@ -7,26 +7,26 @@
     <application>
         <service
             android:name="com.aware.plugin.ambient_noise.Plugin"
-            android:label="AWARE: Ambient Noise"
-            android:exported="true" />
+            android:exported="true"
+            android:label="AWARE: Ambient Noise" />
 
         <activity
             android:name="com.aware.plugin.ambient_noise.Settings"
-            android:label="AWARE: Ambient Noise"
-            android:exported="true" />
+            android:exported="true"
+            android:label="AWARE: Ambient Noise" />
 
         <service
             android:name="com.aware.plugin.ambient_noise.AudioAnalyser"
-            android:label="AWARE: Ambient Noise API"
-            android:exported="true" />
+            android:exported="true"
+            android:label="AWARE: Ambient Noise API" />
 
         <provider
             android:name="com.aware.plugin.ambient_noise.Provider"
-            android:label="@string/plugin_ambient_noise"
             android:authorities="${applicationId}.provider.ambient_noise"
             android:exported="true"
-            android:syncable="true"
+            android:label="@string/plugin_ambient_noise"
             android:readPermission="com.aware.READ_CONTEXT_DATA"
+            android:syncable="true"
             android:writePermission="com.aware.WRITE_CONTEXT_DATA" />
 
         <service
@@ -35,7 +35,9 @@
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
-            <meta-data android:name="android.content.SyncAdapter" android:resource="@xml/sync_ambient_noise" />
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync_ambient_noise" />
         </service>
     </application>
 </manifest>
