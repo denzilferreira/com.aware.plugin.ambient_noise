@@ -2,6 +2,7 @@ package com.aware.plugin.ambient_noise;
 
 import android.app.IntentService;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -13,6 +14,7 @@ import android.util.Log;
 import com.aware.Aware;
 import com.aware.Aware_Preferences;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 
 /**
@@ -31,6 +33,9 @@ public class AudioAnalyser extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
+        //Check if microphone is available right now
+        if(!isMicrophoneAvailable(getApplicationContext())) return;
+
         //Get minimum size of the buffer for pre-determined audio setup and minutes
         int buffer_size = AudioRecord.getMinBufferSize(AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_SYSTEM), AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT) * 10;
 
@@ -41,9 +46,6 @@ public class AudioAnalyser extends IntentService {
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT,
                 buffer_size);
-
-        //Audio data buffer
-        short[] audio_data = new short[buffer_size];
 
         while (recorder.getState() != AudioRecord.STATE_INITIALIZED) {
             //no-op while waiting microphone to initialise
@@ -81,7 +83,9 @@ public class AudioAnalyser extends IntentService {
             Log.d("AWARE::Ambient Noise", "Realtime: " + data.toString());
 
             if (!Aware.getSetting(getApplicationContext(), Settings.PLUGIN_AMBIENT_NOISE_NO_RAW).equals("true")) {
+                short[] audio_data = new short[buffer_size];
                 ByteBuffer byteBuff = ByteBuffer.allocate(2 * buffer_size);
+
                 for (Short a : audio_data) byteBuff.putShort(a);
                 data.put(Provider.AmbientNoise_Data.RAW, byteBuff.array());
             }
@@ -98,5 +102,27 @@ public class AudioAnalyser extends IntentService {
         recorder.release();
 
         Log.d("AWARE::Ambient Noise", "Finished audio sample...");
+    }
+
+    /**
+     * Check if the microphone is available or not
+     * @param context
+     * @return
+     */
+    public static boolean isMicrophoneAvailable(Context context) {
+        MediaRecorder recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+        recorder.setOutputFile(new File(context.getCacheDir(), "MediaUtil#micAvailTestFile").getAbsolutePath());
+        boolean available = true;
+        try {
+            recorder.prepare();
+            recorder.start();
+        } catch (Exception exception) {
+            available = false;
+        }
+        recorder.release();
+        return available;
     }
 }
